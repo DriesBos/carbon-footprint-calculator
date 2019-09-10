@@ -10,7 +10,7 @@
 
 <script>
 import axios from "axios";
-import { key, proxy } from "~/plugins/config";
+import { aviationEdgeKey, aviationEdgeUri, proxy } from "~/plugins/config";
 
 export default {
   data() {
@@ -23,7 +23,12 @@ export default {
     submitQuery: function(input) {
       if (input !== "") {
         axios
-          .get(`${proxy}https://food2fork.com/api/search?key=${key}&q=${input}`)
+          // .get(
+          //   `${proxy}https://aviation-edge.com/api/public/airlineDatabase?key=${key}&${input}`
+          // )
+          .get(
+            `${aviationEdgeUri}flights?key=${aviationEdgeKey}&limit=1&flightIata=DY1$flightNum=257`
+          )
           .then(response => (this.info = response))
           .catch(error => {
             console.log(error.response);
@@ -54,9 +59,9 @@ export default {
 }
 p {
   width: 50vw;
-  white-space: nowrap;
+  /* white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
+  text-overflow: ellipsis; */
 }
 input,
 button,
