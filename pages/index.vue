@@ -79,7 +79,6 @@ export default {
     },
     seatCalculation: function(seat, carbonCalculated) {
       if (seat === "business") {
-        console.log("seat is business");
         this.carbonCalculated = this.carbonCalculated * 2;
       }
     }
