@@ -23,11 +23,8 @@ export default {
     submitQuery: function(input) {
       if (input !== "") {
         axios
-          // .get(
-          //   `${proxy}https://aviation-edge.com/api/public/airlineDatabase?key=${key}&${input}`
-          // )
           .get(
-            `${aviationEdgeUri}flights?key=${aviationEdgeKey}&limit=1&iataNumber=KL1375`
+            `${aviationEdgeUri}flights?key=${aviationEdgeKey}&flightIata=${input}`
           )
           .then(response => (this.info = response))
           .catch(error => {
