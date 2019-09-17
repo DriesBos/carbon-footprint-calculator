@@ -55,12 +55,6 @@ export default {
     };
   },
   methods: {
-    seatCalculation: function(seat, carbonCalculated) {
-      if (seat === "business") {
-        console.log("seat is business");
-        this.carbonCalculated = this.carbonCalculated * 2;
-      }
-    },
     submitQuery: function(input, loading) {
       if (input !== "") {
         this.loading = true;
@@ -79,6 +73,12 @@ export default {
         this.loading = false;
         this.input = "";
       }
+    }
+  },
+  seatCalculation: function(seat, carbonCalculated) {
+    if (seat === "business") {
+      console.log("seat is business");
+      this.carbonCalculated = this.carbonCalculated * 2;
     }
   }
 };
