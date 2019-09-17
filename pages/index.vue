@@ -1,19 +1,23 @@
 <template>
   <div class="container">
-    <div class="center-block">
-      <input
-        v-model="input"
-        @keyup.enter="submitQuery(input, loading)"
-        placeholder="flightnumber"
-        type="text"
-      />
+    <div class="content-block">
+      <div class="input-block">
+        <input
+          v-model="input"
+          @keyup.enter="submitQuery(input, loading)"
+          placeholder="flightnumber"
+          type="text"
+        />
+        <div class="select-container">
+          <span class="select-arrow"></span>
+          <select v-model="seat" @change="seatCalculation(seat, carbonCalculated)">
+            <option value="economy">economy</option>
+            <option value="business">business</option>
+          </select>
+        </div>
 
-      <select v-model="seat" @change="seatCalculation(seat, carbonCalculated)">
-        <option value="economy">economy</option>
-        <option value="business">business</option>
-      </select>
-
-      <button @click="submitQuery(input, loading)">submit</button>
+        <button @click="submitQuery(input, loading)" class="reset-button">submit</button>
+      </div>
 
       <p v-if="info">
         From {{ info.departure.iataCode }} to {{ info.arrival.iataCode }}
@@ -26,9 +30,8 @@
         <br />
         Seat: {{ seat }}
         <br />
+        Carbon footprint: {{ carbonCalculated }}
       </p>
-
-      <p>Carbon footprint: {{ carbonCalculated }}</p>
 
       <p v-if="loading">Loading...</p>
       <p
@@ -73,18 +76,84 @@ export default {
         this.loading = false;
         this.input = "";
       }
-    }
-  },
-  seatCalculation: function(seat, carbonCalculated) {
-    if (seat === "business") {
-      console.log("seat is business");
-      this.carbonCalculated = this.carbonCalculated * 2;
+    },
+    seatCalculation: function(seat, carbonCalculated) {
+      if (seat === "business") {
+        console.log("seat is business");
+        this.carbonCalculated = this.carbonCalculated * 2;
+      }
     }
   }
 };
 </script>
 
 <style>
+input,
+label,
+select,
+button,
+textarea {
+  margin: 0;
+  border: 0;
+  padding: 0;
+  display: inline-block;
+  vertical-align: middle;
+  white-space: normal;
+  background: none;
+  line-height: 1;
+}
+select:focus,
+input:focus {
+  outline: 0;
+}
+input,
+textarea {
+  box-sizing: content-box;
+}
+button,
+input[type="reset"],
+input[type="button"],
+input[type="submit"],
+input[type="checkbox"],
+input[type="radio"],
+select {
+  box-sizing: border-box;
+}
+input[type="checkbox"],
+input[type="radio"] {
+  width: 13px;
+  height: 13px;
+}
+input[type="search"] {
+  appearance: textfield;
+  box-sizing: content-box;
+}
+::-webkit-search-decoration {
+  display: none;
+}
+button,
+input[type="reset"],
+input[type="button"],
+input[type="submit"] {
+  /* Fix IE7 display bug */
+  overflow: visible;
+  width: auto;
+}
+::-webkit-file-upload-button {
+  padding: 0;
+  border: 0;
+  background: none;
+}
+textarea {
+  /* Move the label to the top */
+  vertical-align: top;
+  /* Turn off scroll bars in IE unless needed */
+  overflow: auto;
+}
+select[multiple] {
+  /* Move the label to the top */
+  vertical-align: top;
+}
 .container {
   position: relative;
   display: flex;
@@ -95,11 +164,77 @@ export default {
   height: 100vh;
   background: #dedede;
 }
-.center-block {
+.content-block {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+.input-block {
+  height: 50px;
+  background: white;
+  display: flex;
+  flex-wrap: nowrap;
+  border-radius: 1000px;
+  overflow: hidden;
+  padding-left: 20px;
+}
+input,
+select,
+button {
+  font-size: 14px;
+  color: black;
+  padding-left: 10px;
+  padding-right: 10px;
+  background: white;
+  height: 100%;
+}
+input {
+  background: white;
+  text-transform: uppercase;
+}
+input::placeholder {
+  text-transform: none;
+}
+button {
+  background: #e34c29;
+  color: white !important;
+  border-radius: 100px;
+  padding-left: 20px;
+  padding-right: 20px;
+  cursor: pointer;
+}
+.select-container {
+  background: white;
+  position: relative;
+  cursor: pointer;
+  border: grey !important;
+}
+.select-arrow {
+  color: black;
+  right: 0;
+  top: 0;
+  width: 30px;
+  height: 100%;
+  position: absolute;
+  display: block;
+  z-index: 10;
+  margin: 0 0 0 0;
+  pointer-events: none;
+  cursor: pointer;
+}
+select {
+  appearance: none;
+  line-height: normal;
+  background-repeat: no-repeat;
+  background: white;
+  border-radius: 0;
+  border: 0px;
+  text-shadow: 0 0 0 #000;
+  padding-right: 30px;
+  cursor: pointer;
+  border-left: 1px #dedede solid;
+  /* border-radius: 100px; */
 }
 p {
   width: 50vw;
@@ -108,10 +243,13 @@ p {
   overflow: hidden;
   text-overflow: ellipsis; */
 }
-input,
-button,
-select,
 p {
   margin-bottom: 12px;
+}
+input,
+select,
+button {
+  font-size: 14px;
+  color: black;
 }
 </style>
