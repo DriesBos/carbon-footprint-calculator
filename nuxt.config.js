@@ -4,7 +4,7 @@ export default {
    ** Headers of the page
    */
   head: {
-    title: 'Flight Footprint',
+    title: 'Flight Footprint Calculator',
     meta: [{
         charset: 'utf-8'
       },
@@ -28,7 +28,7 @@ export default {
    ** Customize the progress-bar color
    */
   loading: {
-    color: '#fff'
+    color: '#E34C29'
   },
   /*
    ** Global CSS
