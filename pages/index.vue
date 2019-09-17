@@ -1,7 +1,8 @@
 <template>
   <div class="container">
     <div class="content-block">
-      <div class="input-block">
+      <!-- <transition name="input" mode="out-in"> -->
+      <div class="input-block" key="input">
         <input
           v-model="input"
           @keyup.enter="submitQuery(input, loading)"
@@ -9,34 +10,53 @@
           type="text"
         />
         <div class="select-container">
-          <span class="select-arrow"></span>
           <select v-model="seat" @change="seatCalculation(seat, carbonCalculated)">
             <option value="economy">economy</option>
             <option value="business">business</option>
           </select>
+          <span>seat</span>
         </div>
-
         <button @click="submitQuery(input, loading)" class="reset-button">submit</button>
       </div>
+      <div v-if="info" class="output-block" key="output">
+        <ul>
+          <li>
+            <span>Airline</span>
+            {{ info.airline.iataCode }}
+          </li>
+          <li>
+            <span>Aircraft</span>
+            {{ info.aircraft.iataCode }}
+          </li>
+          <li>
+            <span>From</span>
+            {{ info.departure.iataCode }}
+            <span>to</span>
+            {{ info.arrival.iataCode }}
+          </li>
+          <li>
+            <span>
+              <div class="select-container">
+                <select v-model="seat" @change="seatCalculation(seat, carbonCalculated)">
+                  <option value="economy">economy</option>
+                  <option value="business">business</option>
+                </select>
+                <span>seat</span>
+              </div>
+            </span>
+          </li>
+          <li>
+            <span>Carbon footprint:</span>
+            {{ carbonCalculated }}
+          </li>
+        </ul>
 
-      <p v-if="info">
-        From {{ info.departure.iataCode }} to {{ info.arrival.iataCode }}
-        <br />
-        Airline: {{ info.airline.iataCode }}
-        <br />
-        Aircraft: {{ info.aircraft.iataCode }}
-        <br />
-        Altitude: {{ info.geography.altitude }} is altitude offset of {{ altitudeOffset}}
-        <br />
-        Seat: {{ seat }}
-        <br />
-        Carbon footprint: {{ carbonCalculated }}
-      </p>
-
-      <p v-if="loading">Loading...</p>
-      <p
-        v-if="errored"
-      >We're sorry, we're not able to retrieve this information at the moment, please try back later</p>
+        <p v-if="loading">Loading...</p>
+        <p
+          v-if="errored"
+        >We're sorry, we're not able to retrieve this information at the moment, please try back later</p>
+      </div>
+      <!-- </transition> -->
     </div>
   </div>
 </template>
@@ -67,7 +87,7 @@ export default {
           )
           .then(response => {
             this.info = response.data[0];
-            console.log(this.info);
+            console.log(response);
           })
           .catch(error => {
             console.log(response.error);
@@ -87,6 +107,7 @@ export default {
 </script>
 
 <style>
+/* ---------- resets ---------- */
 input,
 label,
 select,
@@ -161,7 +182,7 @@ select[multiple] {
   align-items: center;
   width: 100%;
   height: 100vh;
-  background: #dedede;
+  background: #3bad92;
 }
 .content-block {
   display: flex;
@@ -169,6 +190,10 @@ select[multiple] {
   justify-content: center;
   align-items: center;
 }
+.content-block div {
+  opacity: 1;
+}
+/* ---------- input block ---------- */
 .input-block {
   height: 50px;
   background: white;
@@ -181,7 +206,7 @@ select[multiple] {
 input,
 select,
 button {
-  font-size: 14px;
+  font-size: 16px;
   color: black;
   padding-left: 10px;
   padding-right: 10px;
@@ -208,40 +233,46 @@ button {
   background: white;
   position: relative;
   cursor: pointer;
-  border: grey !important;
-}
-.select-arrow {
-  color: black;
-  right: 0;
-  top: 0;
-  width: 30px;
-  height: 100%;
-  position: absolute;
-  display: block;
-  z-index: 10;
-  margin: 0 0 0 0;
-  pointer-events: none;
-  cursor: pointer;
+  display: flex;
+  align-items: center;
 }
 select {
   appearance: none;
   line-height: normal;
-  background-repeat: no-repeat;
   background: white;
   border-radius: 0;
   border: 0px;
   text-shadow: 0 0 0 #000;
-  padding-right: 30px;
   cursor: pointer;
-  border-left: 5px #dedede solid;
+  text-decoration: underline;
   /* border-radius: 100px; */
 }
-p {
-  width: 50vw;
-  text-align: center;
-  /* white-space: nowrap;
+.input-block .select-container {
+  margin-right: 20px;
+}
+/* ---------- output block ---------- */
+.output-block {
+  width: 50vmin;
+  height: 50vmin;
+  background: white;
+  display: flex;
+  direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 1000px;
   overflow: hidden;
-  text-overflow: ellipsis; */
+  text-align: center;
+}
+.output-block ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.output-block ul li {
+  margin-bottom: 6px;
+}
+.output-block span {
+  opacity: 0.4;
 }
 p {
   margin-bottom: 12px;
@@ -251,5 +282,22 @@ select,
 button {
   font-size: 14px;
   color: black;
+}
+/* ---------- transitions ---------- */
+.input-enter-active,
+.input-leave-active {
+  transition: opacity 1s ease;
+}
+.input-enter,
+.input-leave-to {
+  opacity: 0;
+}
+.output-enter-active,
+.output-leave-active {
+  transition: opacity 1s ease;
+}
+.output-enter,
+.output-leave-to {
+  opacity: 0;
 }
 </style>
