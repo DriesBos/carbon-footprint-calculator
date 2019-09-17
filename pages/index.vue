@@ -1,9 +1,35 @@
 <template>
   <div class="container">
     <div class="center-block">
-      <input v-model="input" @keyup.enter="submitQuery(input)" placeholder="input" type="text" />
+      <input
+        v-model="input"
+        @keyup.enter="submitQuery(input)"
+        placeholder="flightnumber"
+        type="text"
+      />
+
+      <select v-model="seat" @change="seatCalculation(seat)">
+        <option value="economy">economy</option>
+        <option value="business">business</option>
+      </select>
+
       <button @click="submitQuery(input)">submit</button>
-      <p v-if="info">{{ info }}</p>
+
+      <p v-if="info">
+        From {{ info.departure.iataCode }} to {{ info.arrival.iataCode }}
+        <br />
+        Airline: {{ info.airline.iataCode }}
+        <br />
+        Aircraft: {{ info.aircraft.iataCode }}
+        <br />
+        Altitude: {{ info.geography.altitude }} is altitude offset of {{ altitudeOffset}}
+        <br />
+        Seat: {{ seat }}
+        <br />
+      </p>
+
+      <!-- <p>Carbon footprint: {{ carbonCalculated }}</p> -->
+
       <p v-if="loading">Loading...</p>
       <p
         v-if="errored"
@@ -22,10 +48,19 @@ export default {
       info: null,
       input: "",
       errored: false,
-      loading: false
+      loading: false,
+      altitudeOffset: 0,
+      seat: "economy",
+      carbonCalculated: 100
     };
   },
   methods: {
+    seatCalculation: function(seat, carbonCalculated) {
+      if (seat === "business") {
+        console.log("seat is business");
+        carbonCalculated = carbonCalculated * 2;
+      }
+    },
     submitQuery: function(input, loading) {
       if (input !== "") {
         this.loading = true;
@@ -33,9 +68,12 @@ export default {
           .get(
             `${aviationEdgeUri}flights?key=${aviationEdgeKey}&limit=1&flightIata=${input}`
           )
-          .then(response => (this.info = response.data))
+          .then(response => {
+            this.info = response.data[0];
+            console.log(this.info);
+          })
           .catch(error => {
-            console.log(error);
+            console.log(response.error);
             this.errored = true;
           });
         this.loading = false;
@@ -65,12 +103,14 @@ export default {
 }
 p {
   width: 50vw;
+  text-align: center;
   /* white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis; */
 }
 input,
 button,
+select,
 p {
   margin-bottom: 12px;
 }
