@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="center-block">
-      <input v-model="input" placeholder="input" type="text" />
+      <input v-model="input" @keyup.enter="submitQuery(input)" placeholder="input" type="text" />
       <button @click="submitQuery(input)">submit</button>
       <p>{{ info }}</p>
     </div>
@@ -27,7 +27,7 @@ export default {
           //   `${proxy}https://aviation-edge.com/api/public/airlineDatabase?key=${key}&${input}`
           // )
           .get(
-            `${aviationEdgeUri}flights?key=${aviationEdgeKey}&limit=1&flightIata=DY1$flightNum=257`
+            `${aviationEdgeUri}flights?key=${aviationEdgeKey}&limit=1&iataNumber=KL1375`
           )
           .then(response => (this.info = response))
           .catch(error => {
