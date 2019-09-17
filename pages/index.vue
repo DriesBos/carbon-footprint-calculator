@@ -190,6 +190,7 @@ button {
 }
 input {
   background: white;
+  min-width: 50vw;
   text-transform: uppercase;
 }
 input::placeholder {
@@ -232,7 +233,7 @@ select {
   text-shadow: 0 0 0 #000;
   padding-right: 30px;
   cursor: pointer;
-  border-left: 1px #dedede solid;
+  border-left: 5px #dedede solid;
   /* border-radius: 100px; */
 }
 p {
