@@ -3,17 +3,17 @@
     <div class="center-block">
       <input
         v-model="input"
-        @keyup.enter="submitQuery(input)"
+        @keyup.enter="submitQuery(input, loading)"
         placeholder="flightnumber"
         type="text"
       />
 
-      <select v-model="seat" @change="seatCalculation(seat)">
+      <select v-model="seat" @change="seatCalculation(seat, carbonCalculated)">
         <option value="economy">economy</option>
         <option value="business">business</option>
       </select>
 
-      <button @click="submitQuery(input)">submit</button>
+      <button @click="submitQuery(input, loading)">submit</button>
 
       <p v-if="info">
         From {{ info.departure.iataCode }} to {{ info.arrival.iataCode }}
@@ -28,7 +28,7 @@
         <br />
       </p>
 
-      <!-- <p>Carbon footprint: {{ carbonCalculated }}</p> -->
+      <p>Carbon footprint: {{ carbonCalculated }}</p>
 
       <p v-if="loading">Loading...</p>
       <p
@@ -58,7 +58,7 @@ export default {
     seatCalculation: function(seat, carbonCalculated) {
       if (seat === "business") {
         console.log("seat is business");
-        carbonCalculated = carbonCalculated * 2;
+        this.carbonCalculated = this.carbonCalculated * 2;
       }
     },
     submitQuery: function(input, loading) {
