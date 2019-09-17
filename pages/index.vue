@@ -4,6 +4,7 @@
       <input v-model="input" @keyup.enter="submitQuery(input)" placeholder="input" type="text" />
       <button @click="submitQuery(input)">submit</button>
       <p v-if="info">{{ info }}</p>
+      <p v-if="loading">Loading...</p>
       <p
         v-if="errored"
       >We're sorry, we're not able to retrieve this information at the moment, please try back later</p>
@@ -20,12 +21,14 @@ export default {
     return {
       info: null,
       input: "",
-      errored: false
+      errored: false,
+      loading: false
     };
   },
   methods: {
-    submitQuery: function(input) {
+    submitQuery: function(input, loading) {
       if (input !== "") {
+        this.loading = true;
         axios
           .get(
             `${aviationEdgeUri}flights?key=${aviationEdgeKey}&limit=1&flightIata=${input}`
@@ -35,6 +38,7 @@ export default {
             console.log(error);
             this.errored = true;
           });
+        this.loading = false;
         this.input = "";
       }
     }
