@@ -2,6 +2,7 @@
   <div class="container">
     <div class="content-block">
       <transition name="content-change" mode="out-in">
+        <!------------ Input ------------>
         <div v-if="!info" class="input-block" key="input">
           <input
             v-model="input"
@@ -18,6 +19,7 @@
           </div>
           <button @click="submitQuery(input, loading)" class="reset-button">submit</button>
         </div>
+        <!------------ Output ------------>
         <div v-if="info" class="output-block" key="output">
           <ul>
             <li>
@@ -48,6 +50,9 @@
             <li>
               <span>Carbon footprint:</span>
               {{ carbonCalculated }}
+            </li>
+            <li>
+              <button @click="resetResults(info)">reset</button>
             </li>
           </ul>
 
@@ -101,6 +106,9 @@ export default {
       if (seat === "business") {
         this.carbonCalculated = this.carbonCalculated * 2;
       }
+    },
+    resetResults: function(info) {
+      this.info = null;
     }
   }
 };
