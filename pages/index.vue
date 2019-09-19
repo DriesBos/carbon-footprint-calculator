@@ -1,62 +1,62 @@
 <template>
   <div class="container">
     <div class="content-block">
-      <!-- <transition name="input" mode="out-in"> -->
-      <div class="input-block" key="input">
-        <input
-          v-model="input"
-          @keyup.enter="submitQuery(input, loading)"
-          placeholder="flightnumber"
-          type="text"
-        />
-        <div class="select-container">
-          <select v-model="seat" @change="seatCalculation(seat, carbonCalculated)">
-            <option value="economy">economy</option>
-            <option value="business">business</option>
-          </select>
-          <span>seat</span>
+      <transition name="content-change" mode="out-in">
+        <div v-if="!info" class="input-block" key="input">
+          <input
+            v-model="input"
+            @keyup.enter="submitQuery(input, loading)"
+            placeholder="flightnumber"
+            type="text"
+          />
+          <div class="select-container">
+            <select v-model="seat" @change="seatCalculation(seat, carbonCalculated)">
+              <option value="economy">economy</option>
+              <option value="business">business</option>
+            </select>
+            <span>seat</span>
+          </div>
+          <button @click="submitQuery(input, loading)" class="reset-button">submit</button>
         </div>
-        <button @click="submitQuery(input, loading)" class="reset-button">submit</button>
-      </div>
-      <div v-if="info" class="output-block" key="output">
-        <ul>
-          <li>
-            <span>Airline</span>
-            {{ info.airline.iataCode }}
-          </li>
-          <li>
-            <span>Aircraft</span>
-            {{ info.aircraft.iataCode }}
-          </li>
-          <li>
-            <span>From</span>
-            {{ info.departure.iataCode }}
-            <span>to</span>
-            {{ info.arrival.iataCode }}
-          </li>
-          <li>
-            <span>
-              <div class="select-container">
-                <select v-model="seat" @change="seatCalculation(seat, carbonCalculated)">
-                  <option value="economy">economy</option>
-                  <option value="business">business</option>
-                </select>
-                <span>seat</span>
-              </div>
-            </span>
-          </li>
-          <li>
-            <span>Carbon footprint:</span>
-            {{ carbonCalculated }}
-          </li>
-        </ul>
+        <div v-if="info" class="output-block" key="output">
+          <ul>
+            <li>
+              <span>Airline</span>
+              {{ info.airline.iataCode }}
+            </li>
+            <li>
+              <span>Aircraft</span>
+              {{ info.aircraft.iataCode }}
+            </li>
+            <li>
+              <span>From</span>
+              {{ info.departure.iataCode }}
+              <span>to</span>
+              {{ info.arrival.iataCode }}
+            </li>
+            <li>
+              <span>
+                <div class="select-container">
+                  <select v-model="seat" @change="seatCalculation(seat, carbonCalculated)">
+                    <option value="economy">economy</option>
+                    <option value="business">business</option>
+                  </select>
+                  <span>seat</span>
+                </div>
+              </span>
+            </li>
+            <li>
+              <span>Carbon footprint:</span>
+              {{ carbonCalculated }}
+            </li>
+          </ul>
 
-        <p v-if="loading">Loading...</p>
-        <p
-          v-if="errored"
-        >We're sorry, we're not able to retrieve this information at the moment, please try back later</p>
-      </div>
-      <!-- </transition> -->
+          <p v-if="loading">Loading...</p>
+          <p
+            v-if="errored"
+          >We're sorry, we're not able to retrieve this information at the moment, please try back later</p>
+        </div>
+      </transition>
     </div>
   </div>
 </template>
@@ -174,6 +174,7 @@ select[multiple] {
   /* Move the label to the top */
   vertical-align: top;
 }
+/* ---------- content containers ---------- */
 .container {
   position: relative;
   display: flex;
@@ -190,9 +191,9 @@ select[multiple] {
   justify-content: center;
   align-items: center;
 }
-.content-block div {
+/* .content-block div {
   opacity: 1;
-}
+} */
 /* ---------- input block ---------- */
 .input-block {
   height: 50px;
@@ -284,20 +285,15 @@ button {
   color: black;
 }
 /* ---------- transitions ---------- */
-.input-enter-active,
-.input-leave-active {
-  transition: opacity 1s ease;
+.content-change-enter-active {
+  transition: all 0.33s ease;
 }
-.input-enter,
-.input-leave-to {
+.content-change-leave-active {
+  transition: all 0.12s ease;
+}
+.content-change-enter,
+.content-change-leave-to {
   opacity: 0;
-}
-.output-enter-active,
-.output-leave-active {
-  transition: opacity 1s ease;
-}
-.output-enter,
-.output-leave-to {
-  opacity: 0;
+  transform: translateY(30px);
 }
 </style>
