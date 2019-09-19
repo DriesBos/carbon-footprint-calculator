@@ -65,6 +65,8 @@
 // Store output departure/arrival Iata in constants
 // Use departure/arrival constants to calculate distance through airline routes API
 // Create and show distance constant
+// TODO
+// Add function to change aircraftIata to aircraftType
 // TOFIX
 // if loading + if error
 import axios from "axios";
@@ -73,7 +75,7 @@ import { aviationEdgeKey, aviationEdgeUri, proxy } from "~/plugins/config";
 export default {
   data() {
     return {
-      result: null,
+      result: "",
       input: "",
       errored: false,
       loading: false,
@@ -90,6 +92,7 @@ export default {
     },
     submitQuery: function(input, loading) {
       if (input !== "") {
+        let result = "";
         this.loading = true;
         axios
           .get(
