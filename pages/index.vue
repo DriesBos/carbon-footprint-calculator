@@ -5,7 +5,7 @@
         <!------------ Input ------------>
         <div v-if="!result" class="input-block" key="input">
           <input
-            id="focus"
+            id="flightNumInput"
             v-model="input"
             @keyup.enter="submitQuery(input)"
             placeholder="flightnumber"
@@ -88,24 +88,27 @@ export default {
   },
   methods: {
     inputFocus: function() {
-      document.getElementById("focus").focus();
+      document.getElementById("flightNumInput").focus();
     },
     submitQuery: function(input) {
       if (input !== "") {
-        let result = "";
         axios
           .get(
             `${aviationEdgeUri}flights?key=${aviationEdgeKey}&limit=1&flightIata=${input}`
           )
           .then(response => {
             this.result = response.data[0];
-            console.log(response);
           })
           .catch(error => {
             console.log(response.error);
             this.errored = true;
           });
+        console.log(this.result);
         this.input = "";
+      } else {
+        document.getElementById("flightNumInput").placeholder =
+          "please enter a flightnumber";
+        document.getElementById("flightNumInput").focus();
       }
     },
     seatCalculation: function(seat, carbonTotal) {
@@ -114,7 +117,8 @@ export default {
       }
     },
     resetResults: function(result) {
-      this.result = null;
+      this.result = "";
+      console.log(this.result);
     }
   },
   mounted: function() {
