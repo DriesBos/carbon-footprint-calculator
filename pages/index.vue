@@ -5,6 +5,7 @@
         <!------------ Input ------------>
         <div v-if="!info" class="input-block" key="input">
           <input
+            id="focus"
             v-model="input"
             @keyup.enter="submitQuery(input, loading)"
             placeholder="flightnumber"
@@ -78,6 +79,9 @@ export default {
     };
   },
   methods: {
+    inputFocus: function() {
+      document.getElementById("focus").focus();
+    },
     submitQuery: function(input, loading) {
       if (input !== "") {
         this.loading = true;
@@ -105,6 +109,9 @@ export default {
     resetResults: function(info) {
       this.info = null;
     }
+  },
+  mounted: function() {
+    this.inputFocus(); // TODO: make input component so this works on component render
   }
 };
 </script>
