@@ -61,6 +61,12 @@
 </template>
 
 <script>
+// TODO
+// Store output departure/arrival Iata in constants
+// Use departure/arrival constants to calculate distance through airline routes API
+// Create and show distance constant
+// TOFIX
+// if loading + if error
 import axios from "axios";
 import { aviationEdgeKey, aviationEdgeUri, proxy } from "~/plugins/config";
 
