@@ -173,7 +173,6 @@ button,
 input[type="reset"],
 input[type="button"],
 input[type="submit"] {
-  /* Fix IE7 display bug */
   overflow: visible;
   width: auto;
 }
@@ -183,13 +182,10 @@ input[type="submit"] {
   background: none;
 }
 textarea {
-  /* Move the label to the top */
   vertical-align: top;
-  /* Turn off scroll bars in IE unless needed */
   overflow: auto;
 }
 select[multiple] {
-  /* Move the label to the top */
   vertical-align: top;
 }
 /* ---------- content containers ---------- */
