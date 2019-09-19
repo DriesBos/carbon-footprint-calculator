@@ -11,11 +11,11 @@
             type="text"
           />
           <div class="select-container">
-            <select v-model="seat" @change="seatCalculation(seat, carbonCalculated)">
+            <select v-model="seat" @change="seatCalculation(seat, carbonTotal)">
               <option value="economy">economy</option>
               <option value="business">business</option>
             </select>
-            <span>seat</span>
+            <span>&nbsp;seat</span>
           </div>
           <button @click="submitQuery(input, loading)" class="reset-button">submit</button>
         </div>
@@ -37,19 +37,12 @@
               {{ info.arrival.iataCode }}
             </li>
             <li>
-              <span>
-                <div class="select-container">
-                  <select v-model="seat" @change="seatCalculation(seat, carbonCalculated)">
-                    <option value="economy">economy</option>
-                    <option value="business">business</option>
-                  </select>
-                  <span>seat</span>
-                </div>
-              </span>
+              {{ seat }}
+              <span>seat</span>
             </li>
             <li>
               <span>Carbon footprint:</span>
-              {{ carbonCalculated }}
+              {{ carbonTotal }}
             </li>
             <li>
               <button @click="resetResults(info)">reset</button>
@@ -79,7 +72,9 @@ export default {
       loading: false,
       altitudeOffset: 0,
       seat: "economy",
-      carbonCalculated: 100
+      carbonSeatMultiplier: false,
+      carbonBase: 100,
+      carbonTotal: 100
     };
   },
   methods: {
@@ -102,9 +97,9 @@ export default {
         this.input = "";
       }
     },
-    seatCalculation: function(seat, carbonCalculated) {
+    seatCalculation: function(seat, carbonTotal) {
       if (seat === "business") {
-        this.carbonCalculated = this.carbonCalculated * 2;
+        this.carbonTotal = this.carbonTotal * 2;
       }
     },
     resetResults: function(info) {
@@ -217,8 +212,6 @@ select,
 button {
   font-size: 16px;
   color: black;
-  padding-left: 10px;
-  padding-right: 10px;
   background: white;
   height: 100%;
 }
