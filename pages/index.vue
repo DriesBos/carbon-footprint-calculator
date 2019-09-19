@@ -125,6 +125,7 @@ textarea {
   background: none;
   line-height: 1;
 }
+button:focus,
 select:focus,
 input:focus {
   outline: 0;
