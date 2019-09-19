@@ -3,7 +3,7 @@
     <div class="content-block">
       <transition name="content-change" mode="out-in">
         <!------------ Input ------------>
-        <div v-if="!info" class="input-block" key="input">
+        <div v-if="!result" class="input-block" key="input">
           <input
             id="focus"
             v-model="input"
@@ -21,21 +21,21 @@
           <button @click="submitQuery(input, loading)" class="reset-button">submit</button>
         </div>
         <!------------ Output ------------>
-        <div v-if="info" class="output-block" key="output">
+        <div v-if="result" class="output-block" key="output">
           <ul>
             <li>
               <span>Airline</span>
-              {{ info.airline.iataCode }}
+              {{ result.airline.iataCode }}
             </li>
             <li>
               <span>Aircraft</span>
-              {{ info.aircraft.iataCode }}
+              {{ result.aircraft.iataCode }}
             </li>
             <li>
               <span>From</span>
-              {{ info.departure.iataCode }}
+              {{ result.departure.iataCode }}
               <span>to</span>
-              {{ info.arrival.iataCode }}
+              {{ result.arrival.iataCode }}
             </li>
             <li>
               {{ seat }}
@@ -46,14 +46,14 @@
               {{ carbonTotal }}
             </li>
             <li>
-              <button @click="resetResults(info)">reset</button>
+              <button @click="resetResults(result)">reset</button>
             </li>
           </ul>
 
           <p v-if="loading">Loading...</p>
           <p
             v-if="errored"
-          >We're sorry, we're not able to retrieve this information at the moment, please try back later</p>
+          >We're sorry, we're not able to retrieve this resultrmation at the moment, please try back later</p>
         </div>
       </transition>
     </div>
@@ -73,7 +73,7 @@ import { aviationEdgeKey, aviationEdgeUri, proxy } from "~/plugins/config";
 export default {
   data() {
     return {
-      info: null,
+      result: null,
       input: "",
       errored: false,
       loading: false,
@@ -96,7 +96,7 @@ export default {
             `${aviationEdgeUri}flights?key=${aviationEdgeKey}&limit=1&flightIata=${input}`
           )
           .then(response => {
-            this.info = response.data[0];
+            this.result = response.data[0];
             console.log(response);
           })
           .catch(error => {
@@ -112,8 +112,8 @@ export default {
         this.carbonTotal = this.carbonTotal * 2;
       }
     },
-    resetResults: function(info) {
-      this.info = null;
+    resetResults: function(result) {
+      this.result = null;
     }
   },
   mounted: function() {
