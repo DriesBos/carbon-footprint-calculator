@@ -7,7 +7,7 @@
           <input
             id="focus"
             v-model="input"
-            @keyup.enter="submitQuery(input, loading)"
+            @keyup.enter="submitQuery(input)"
             placeholder="flightnumber"
             type="text"
           />
@@ -18,7 +18,7 @@
             </select>
             <span>&nbsp;seat</span>
           </div>
-          <button @click="submitQuery(input, loading)" class="reset-button">submit</button>
+          <button @click="submitQuery(input)" class="reset-button">submit</button>
         </div>
         <!------------ Output ------------>
         <div v-if="result" class="output-block" key="output">
@@ -90,10 +90,9 @@ export default {
     inputFocus: function() {
       document.getElementById("focus").focus();
     },
-    submitQuery: function(input, loading) {
+    submitQuery: function(input) {
       if (input !== "") {
         let result = "";
-        this.loading = true;
         axios
           .get(
             `${aviationEdgeUri}flights?key=${aviationEdgeKey}&limit=1&flightIata=${input}`
@@ -106,7 +105,6 @@ export default {
             console.log(response.error);
             this.errored = true;
           });
-        this.loading = false;
         this.input = "";
       }
     },
