@@ -28,12 +28,29 @@ export default {
    ** Customize the progress-bar color
    */
   loading: {
-    color: '#E34C29'
+    color: '#E34C29',
+    height: '2px',
+    throttle: '200'
+  },
+
+  router: {
+    scrollBehavior: function (to, from, savedPosition) {
+      return {
+        x: 0,
+        y: 0
+      }
+    }
   },
   /*
    ** Global CSS
    */
-  css: [],
+  css: [
+    '@/assets/styling/reset.css',
+    '~/assets/styling/variables.sass',
+    '~/assets/styling/typography.sass',
+    '~/assets/styling/transitions.sass',
+    '@/assets/styling/main.sass'
+  ],
   /*
    ** Plugins to load before mounting the App
    */

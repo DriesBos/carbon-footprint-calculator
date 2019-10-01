@@ -1,0 +1,100 @@
+/* ---------- content containers ----------
+
+.container
+  position: relative
+  display: flex
+  flex-direction: column
+  justify-content: center
+  align-items: center
+  width: 100%
+  height: 100vh
+  background: #3bad92
+  background: #4F6485
+
+.content-block
+  display: flex
+  flex-direction: column
+  justify-content: center
+  align-items: center
+
+/* ---------- input block ----------
+
+.input-block
+  height: 50px
+  background: white
+  display: flex
+  flex-wrap: nowrap
+  border-radius: 1000px
+  overflow: hidden
+  padding-left: 20px
+
+input, select, button
+  font-size: 16px
+  color: black
+  background: white
+  height: 100%
+
+input
+  background: white
+  min-width: 50vw
+  text-transform: uppercase
+
+  &::placeholder
+    text-transform: none
+
+button
+  background: #e34c29
+  color: white !important
+  border-radius: 100px
+  padding-left: 20px
+  padding-right: 20px
+  cursor: pointer
+
+.select-container
+  background: white
+  position: relative
+  cursor: pointer
+  display: flex
+  align-items: center
+
+select
+  appearance: none
+  line-height: normal
+  background: white
+  border-radius: 0
+  border: 0px
+  text-shadow: 0 0 0 #000
+  cursor: pointer
+  text-decoration: underline
+
+/* ---------- output block ---------- */
+
+.output-block
+  width: 50vmin
+  height: 50vmin
+  background: white
+  display: flex
+  direction: column
+  justify-content: center
+  align-items: center
+  border-radius: 1000px
+  overflow: hidden
+  text-align: center
+
+  ul
+    list-style: none
+    padding: 0
+    margin: 0
+
+    li
+      margin-bottom: 6px
+
+  span
+    opacity: 0.4
+
+p
+  margin-bottom: 12px
+
+input, select, button
+  font-size: 14px
+  color: black
