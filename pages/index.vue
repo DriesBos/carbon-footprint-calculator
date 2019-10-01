@@ -98,12 +98,12 @@ export default {
           )
           .then(response => {
             this.result = response.data[0];
+            console.log(this.result);
           })
           .catch(error => {
-            console.log(response.error);
             this.errored = true;
+            console.log(response.error);
           });
-        console.log(this.result);
         this.input = "";
       } else {
         document.getElementById("flightNumInput").placeholder =
@@ -116,6 +116,20 @@ export default {
         this.carbonTotal = this.carbonTotal * 2;
       }
     },
+    aircraftType: function(result) {
+      const urlPath = "greatcirclemapper.p.rapidapi.com";
+      const aircraftCode = result.aircraft.iataCode;
+      let aircraftName = "";
+      axios
+        .get(`${urlPath}`)
+        .then(response => {
+          this.aircraftName = response;
+          console.log(this.aircraftName);
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
     resetResults: function(result) {
       this.result = "";
       console.log(this.result);
@@ -126,190 +140,3 @@ export default {
   }
 };
 </script>
-
-<style>
-/* ---------- resets ---------- */
-input,
-label,
-select,
-button,
-textarea {
-  margin: 0;
-  border: 0;
-  padding: 0;
-  display: inline-block;
-  vertical-align: middle;
-  white-space: normal;
-  background: none;
-  line-height: 1;
-}
-button:focus,
-select:focus,
-input:focus {
-  outline: 0;
-}
-input,
-textarea {
-  box-sizing: content-box;
-}
-button,
-input[type="reset"],
-input[type="button"],
-input[type="submit"],
-input[type="checkbox"],
-input[type="radio"],
-select {
-  box-sizing: border-box;
-}
-input[type="checkbox"],
-input[type="radio"] {
-  width: 13px;
-  height: 13px;
-}
-input[type="search"] {
-  appearance: textfield;
-  box-sizing: content-box;
-}
-::-webkit-search-decoration {
-  display: none;
-}
-button,
-input[type="reset"],
-input[type="button"],
-input[type="submit"] {
-  overflow: visible;
-  width: auto;
-}
-::-webkit-file-upload-button {
-  padding: 0;
-  border: 0;
-  background: none;
-}
-textarea {
-  vertical-align: top;
-  overflow: auto;
-}
-select[multiple] {
-  vertical-align: top;
-}
-/* ---------- content containers ---------- */
-.container {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 100vh;
-  background: #3bad92;
-}
-.content-block {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-/* .content-block div {
-  opacity: 1;
-} */
-/* ---------- input block ---------- */
-.input-block {
-  height: 50px;
-  background: white;
-  display: flex;
-  flex-wrap: nowrap;
-  border-radius: 1000px;
-  overflow: hidden;
-  padding-left: 20px;
-}
-input,
-select,
-button {
-  font-size: 16px;
-  color: black;
-  background: white;
-  height: 100%;
-}
-input {
-  background: white;
-  min-width: 50vw;
-  text-transform: uppercase;
-}
-input::placeholder {
-  text-transform: none;
-}
-button {
-  background: #e34c29;
-  color: white !important;
-  border-radius: 100px;
-  padding-left: 20px;
-  padding-right: 20px;
-  cursor: pointer;
-}
-.select-container {
-  background: white;
-  position: relative;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-}
-select {
-  appearance: none;
-  line-height: normal;
-  background: white;
-  border-radius: 0;
-  border: 0px;
-  text-shadow: 0 0 0 #000;
-  cursor: pointer;
-  text-decoration: underline;
-  /* border-radius: 100px; */
-}
-.input-block .select-container {
-  margin-right: 20px;
-}
-/* ---------- output block ---------- */
-.output-block {
-  width: 50vmin;
-  height: 50vmin;
-  background: white;
-  display: flex;
-  direction: column;
-  justify-content: center;
-  align-items: center;
-  border-radius: 1000px;
-  overflow: hidden;
-  text-align: center;
-}
-.output-block ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-.output-block ul li {
-  margin-bottom: 6px;
-}
-.output-block span {
-  opacity: 0.4;
-}
-p {
-  margin-bottom: 12px;
-}
-input,
-select,
-button {
-  font-size: 14px;
-  color: black;
-}
-/* ---------- transitions ---------- */
-.content-change-enter-active {
-  transition: all 0.33s ease;
-}
-.content-change-leave-active {
-  transition: all 0.12s ease;
-}
-.content-change-enter,
-.content-change-leave-to {
-  opacity: 0;
-  transform: translateY(30px);
-}
-</style>
