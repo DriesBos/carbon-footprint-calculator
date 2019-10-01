@@ -75,11 +75,14 @@ import { aviationEdgeKey, aviationEdgeUri, proxy } from "~/plugins/config";
 export default {
   data() {
     return {
-      result: "",
       input: "",
-      errored: false,
-      loading: false,
-      altitudeOffset: 0,
+      result: "",
+      departureResult: "",
+      arrivalResult: "",
+      aircraftResult: "",
+      // errored: false,
+      // loading: false,
+      // altitudeOffset: 0,
       seat: "economy",
       carbonSeatMultiplier: false,
       carbonBase: 100,
@@ -92,7 +95,6 @@ export default {
     },
     submitQuery: function(input) {
       let inputTrimmed = input.trim() && input.replace(/ +/g, "");
-      console.log(inputTrimmed);
       if (inputTrimmed !== "") {
         axios
           .get(
@@ -100,11 +102,14 @@ export default {
           )
           .then(response => {
             this.result = response.data[0];
-            console.log(this.result);
+            this.departureResult = response.data[0].departure.iataCode;
+            this.arrivalResult = response.data[0].arrival.iataCode;
+            this.aircraftResult = response.data[0].aircraft.iataCode;
+            console.log("RESULT", this.result);
           })
           .catch(error => {
             this.errored = true;
-            console.log(response.error);
+            console.log("ERROR", response.error);
           });
         this.input = "";
       } else {
