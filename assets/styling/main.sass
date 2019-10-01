@@ -8,7 +8,7 @@
   align-items: center
   width: 100%
   height: 100vh
-  background: #3bad92
+  // background: #3bad92
   background: #4F6485
 
 .content-block
@@ -17,16 +17,28 @@
   justify-content: center
   align-items: center
 
-/* ---------- input block ----------
+  /* ---------- input block ---------- */
 
-.input-block
-  height: 50px
-  background: white
-  display: flex
-  flex-wrap: nowrap
-  border-radius: 1000px
-  overflow: hidden
-  padding-left: 20px
+  .input-block
+    height: 50px
+    background: white
+    display: flex
+    flex-wrap: nowrap
+    border-radius: 1000px
+    overflow: hidden
+    padding-left: 20px
+
+    input
+      min-width: 200px
+      padding-right: 10px
+
+    .select-container
+      background: white
+      position: relative
+      cursor: pointer
+      display: flex
+      align-items: center
+      padding-right: 10px
 
 input, select, button
   font-size: 16px
@@ -36,7 +48,6 @@ input, select, button
 
 input
   background: white
-  min-width: 50vw
   text-transform: uppercase
 
   &::placeholder
@@ -49,13 +60,6 @@ button
   padding-left: 20px
   padding-right: 20px
   cursor: pointer
-
-.select-container
-  background: white
-  position: relative
-  cursor: pointer
-  display: flex
-  align-items: center
 
 select
   appearance: none
