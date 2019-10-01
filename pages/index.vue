@@ -91,10 +91,12 @@ export default {
       document.getElementById("flightNumInput").focus();
     },
     submitQuery: function(input) {
-      if (input !== "") {
+      let inputTrimmed = input.trim() && input.replace(/ +/g, "");
+      console.log(inputTrimmed);
+      if (inputTrimmed !== "") {
         axios
           .get(
-            `${aviationEdgeUri}flights?key=${aviationEdgeKey}&limit=1&flightIata=${input}`
+            `${aviationEdgeUri}flights?key=${aviationEdgeKey}&limit=1&flightIata=${inputTrimmed}`
           )
           .then(response => {
             this.result = response.data[0];
@@ -116,20 +118,20 @@ export default {
         this.carbonTotal = this.carbonTotal * 2;
       }
     },
-    aircraftType: function(result) {
-      const urlPath = "greatcirclemapper.p.rapidapi.com";
-      const aircraftCode = result.aircraft.iataCode;
-      let aircraftName = "";
-      axios
-        .get(`${urlPath}`)
-        .then(response => {
-          this.aircraftName = response;
-          console.log(this.aircraftName);
-        })
-        .catch(error => {
-          console.log(error);
-        });
-    },
+    // aircraftType: function(result) {
+    //   const urlPath = "greatcirclemapper.p.rapidapi.com";
+    //   const aircraftCode = result.aircraft.iataCode;
+    //   let aircraftName = "";
+    //   axios
+    //     .get(`${urlPath}`)
+    //     .then(response => {
+    //       this.aircraftName = response;
+    //       console.log(this.aircraftName);
+    //     })
+    //     .catch(error => {
+    //       console.log(error);
+    //     });
+    // },
     resetResults: function(result) {
       this.result = "";
       console.log(this.result);
