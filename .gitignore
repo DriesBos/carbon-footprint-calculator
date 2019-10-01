@@ -1,6 +1,9 @@
 # Ignore js config
 config.js
 
+package-lock.json
+yarn-lock.json
+
 # Created by .ignore support plugin (hsz.mobi)
 ### Node template
 # Logs
