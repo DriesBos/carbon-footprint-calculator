@@ -3,54 +3,63 @@
     <div class="content-block">
       <transition name="content-change" mode="out-in">
         <!------------ Inputs ------------>
-        <div v-if="!result" class="input-container" key="input">
-          <div class="input-block">
-            <input
-              id="flightNumInput"
-              v-model="input"
-              @keyup.enter="submitFlightQuery(input)"
-              placeholder="flightnumber"
-              type="text"
-            />
-            <div class="select-container">
-              <select v-model="seat" @change="seatCalculation(seat, carbonTotal)">
-                <option value="economy">economy</option>
-                <option value="business">business</option>
-              </select>
-              <span>&nbsp;seat</span>
+        <div v-if="!result" class="input-container" key="flightNumber">
+          <transition name="content-change" mode="out-in">
+            <div v-if="inputIsFlightNumber" class="input-block">
+              <input
+                id="flightNumInput"
+                v-model="input"
+                @keyup.enter="submitFlightQuery()"
+                placeholder="flightnumber"
+                type="text"
+              />
+              <div class="select-container">
+                <select v-model="seat" @change="seatCalculation()">
+                  <option value="economy">economy</option>
+                  <option value="business">business</option>
+                </select>
+                <span>&nbsp;seat</span>
+              </div>
+              <button @click="submitFlightQuery(input)" class="reset-button">submit</button>
             </div>
-            <button @click="submitFlightQuery(input)" class="reset-button">submit</button>
-          </div>
 
-          <div class="input-block">
-            <input
-              id="departureInput"
-              v-model="departureResult"
-              @keyup.enter="submitAiportQuery(departureResult, arrivalResult)"
-              placeholder="departure"
-              type="text"
-            />
-            <input
-              id="arrivalInput"
-              v-model="arrivalResult"
-              @keyup.enter="submitAirportQuery(departureResult, arrivalResult)"
-              placeholder="arrival"
-              type="text"
-            />
-            <button
-              @click="submitAirportQuery(departureResult, arrivalResult)"
-              class="reset-button"
-            >submit</button>
+            <div v-else class="input-block" key="airports">
+              <input
+                id="departureInput"
+                v-model="departureResult"
+                @keyup.enter="submitAiportQuery()"
+                placeholder="departure"
+                type="text"
+              />
+              <input
+                id="arrivalInput"
+                v-model="arrivalResult"
+                @keyup.enter="submitAirportQuery()"
+                placeholder="arrival"
+                type="text"
+              />
+              <div class="select-container">
+                <select v-model="seat" @change="seatCalculation()">
+                  <option value="economy">economy</option>
+                  <option value="business">business</option>
+                </select>
+                <span>&nbsp;seat</span>
+              </div>
+              <button @click="submitAirportQuery()" class="reset-button">submit</button>
+            </div>
+          </transition>
+
+          <div @click="inputIsFlightNumber = !inputIsFlightNumber" class="input-toggle">
+            <transition name="content-change" mode="out-in">
+              <p v-if="inputIsFlightNumber" key="airports">calculate by airports</p>
+              <p v-else key="flightNumber">calculate by flight-number</p>
+            </transition>
           </div>
         </div>
         <!------------ Output ------------>
 
         <div v-if="result" class="output-block" key="output">
           <ul>
-            <!-- <li v-if="distanceResult">
-              <span>Distance</span>
-              {{ distanceResult }}
-            </li>-->
             <li>
               <span>Carbon footprint:</span>
               {{ carbonTotal }}
@@ -100,24 +109,40 @@ export default {
       distanceResult: "",
       errored: false,
       loading: false,
-      // altitudeOffset: 0,
       seat: "economy",
       carbonSeatMultiplier: false,
-      carbonBase: 100,
-      carbonTotal: 100
+      carbonTotal: 100,
+      inputIsFlightNumber: true
     };
   },
   methods: {
     inputFocus: function() {
       document.getElementById("flightNumInput").focus();
     },
+    seatCalculation: function() {
+      if (this.seat === "business") {
+        this.carbonTotal = this.carbonTotal * 2;
+      }
+    },
+    resetInput: function() {
+      this.departureResult = "";
+      this.arrivalResult = "";
+      this.input = "";
+      this.seat = "economy";
+      // this.inputFocus();
+    },
+    resetResults: function(result) {
+      this.result = "";
+      console.log(this.result);
+    },
 
-    submitFlightQuery: function(input) {
-      let inputTrimmed = input.trim() && input.replace(/ +/g, "");
+    submitFlightQuery: function() {
+      let inputTrimmed = this.input.trim() && this.input.replace(/ +/g, "");
+      console.log("INPUT", this.input);
       if (inputTrimmed !== "") {
         axios
           .get(
-            `${aviationEdgeUri}flights?key=${aviationEdgeKey}&limit=1&flightIata=${inputTrimmed}`
+            `${aviationEdgeUri}flights?key=${aviationEdgeKey}&limit=1&flightIata=${this.inputTrimmed}`
           )
           .then(response => {
             this.result = response.data[0];
@@ -125,29 +150,25 @@ export default {
             this.arrivalResult = response.data[0].arrival.icaoCode;
             this.aircraftResult = response.data[0].aircraft.iataCode;
             console.log("RESULT", this.result);
+            console.log("RESPONSE", response.data);
+            // submitAirportQuery();
           })
           .catch(error => {
             // this.errored = true;
             console.log("submitFlightQuery ERROR", response.error);
           });
-        this.input = "";
       } else {
         document.getElementById("flightNumInput").placeholder =
           "please enter a flightnumber";
         document.getElementById("flightNumInput").focus();
       }
+      this.resetInput();
     },
 
-    seatCalculation: function(seat, carbonTotal) {
-      if (seat === "business") {
-        this.carbonTotal = this.carbonTotal * 2;
-      }
-    },
-
-    submitAirportQuery: function(departureResult, arrivalResult, carbonTotal) {
+    submitAirportQuery: function() {
       axios({
         method: "GET",
-        url: `${greatCircleMapperUri}airports/route/${departureResult}-${arrivalResult}/510`,
+        url: `${greatCircleMapperUri}airports/route/${this.departureResult}-${this.arrivalResult}/510`,
         headers: {
           "x-rapidapi-host": "greatcirclemapper.p.rapidapi.com",
           "x-rapidapi-key": `${greatCircleMapperKey}`,
@@ -156,34 +177,12 @@ export default {
       })
         .then(response => {
           this.result = response.data.totals.distance_km;
+          this.carbonTotal *= this.result / 0.5;
         })
         .catch(error => {
           console.log(error);
         });
-      carbonTotal = this.result * 0.3;
-      console.log(this.result);
-      this.departureResult = "";
-      this.arrivalResult = "";
-    },
-
-    // aircraftType: function(result) {
-    //   const urlPath = "greatcirclemapper.p.rapidapi.com";
-    //   const aircraftCode = result.aircraft.iataCode;
-    //   let aircraftName = "";
-    //   axios
-    //     .get(`${urlPath}`)
-    //     .then(response => {
-    //       this.aircraftName = response;
-    //       console.log(this.aircraftName);
-    //     })
-    //     .catch(error => {
-    //       console.log(error);
-    //     });
-    // },
-
-    resetResults: function(result) {
-      this.result = "";
-      console.log(this.result);
+      this.resetInput();
     }
   },
   mounted: function() {
