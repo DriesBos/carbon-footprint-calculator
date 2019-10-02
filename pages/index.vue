@@ -15,10 +15,9 @@
               />
               <div class="select-container">
                 <select v-model="seat" @change="seatCalculation()">
-                  <option value="economy">economy</option>
-                  <option value="business">business</option>
+                  <option value="economy">economy seat</option>
+                  <option value="business">business seat</option>
                 </select>
-                <span>&nbsp;seat</span>
               </div>
               <button @click="submitFlightQuery(input)" class="reset-button">submit</button>
             </div>
@@ -40,10 +39,9 @@
               />
               <div class="select-container">
                 <select v-model="seat" @change="seatCalculation()">
-                  <option value="economy">economy</option>
-                  <option value="business">business</option>
+                  <option value="economy">economy seat</option>
+                  <option value="business">business seat</option>
                 </select>
-                <span>&nbsp;seat</span>
               </div>
               <button @click="submitAirportQuery()" class="reset-button">submit</button>
             </div>
@@ -61,8 +59,8 @@
         <div v-if="result" class="output-block" key="output">
           <ul>
             <li>
-              <span>Carbon footprint:</span>
-              {{ carbonTotal }}
+              <div class="bar-text">Emission Footprint: {{ carbonTotal }}</div>
+              <div class="animatedBar"></div>
             </li>
             <li>
               <button @click="resetResults(result)">reset</button>
@@ -90,6 +88,7 @@
 // if loading + if error
 // Approach scientist for proper calculations
 import axios from "axios";
+import anime from "animejs"
 import {
   aviationEdgeKey,
   aviationEdgeUri,
@@ -112,10 +111,20 @@ export default {
       seat: "economy",
       carbonSeatMultiplier: false,
       carbonTotal: 100,
+      carbonTotalBar: 70,
       inputIsFlightNumber: true
     };
   },
   methods: {
+    animate: function() {
+      console.log("ANIME");
+      anime({
+        targets: ".animatedBar",
+        width: 380,
+        duration: 800,
+        easing: 'easeInOutQuad'
+      });
+    },
     inputFocus: function() {
       document.getElementById("flightNumInput").focus();
     },
@@ -136,22 +145,20 @@ export default {
       console.log(this.result);
     },
 
-    submitFlightQuery: function() {
-      let inputTrimmed = this.input.trim() && this.input.replace(/ +/g, "");
-      console.log("INPUT", this.input);
+    submitFlightQuery: function(input) {
+      let inputTrimmed = input.trim() && input.replace(/ +/g, "");
+      console.log("INPUT", input);
       if (inputTrimmed !== "") {
         axios
           .get(
-            `${aviationEdgeUri}flights?key=${aviationEdgeKey}&limit=1&flightIata=${this.inputTrimmed}`
+            `${aviationEdgeUri}flights?key=${aviationEdgeKey}&limit=1&flightIata=${inputTrimmed}`
           )
           .then(response => {
-            this.result = response.data[0];
+            console.log("RESULT", response.data[0])
+            this.result = response.data[0]
             this.departureResult = response.data[0].departure.icaoCode;
             this.arrivalResult = response.data[0].arrival.icaoCode;
-            this.aircraftResult = response.data[0].aircraft.iataCode;
-            console.log("RESULT", this.result);
-            console.log("RESPONSE", response.data);
-            // submitAirportQuery();
+            this.submitAirportQuery();
           })
           .catch(error => {
             // this.errored = true;
@@ -178,6 +185,7 @@ export default {
         .then(response => {
           this.result = response.data.totals.distance_km;
           this.carbonTotal *= this.result / 0.5;
+          this.animate()
         })
         .catch(error => {
           console.log(error);

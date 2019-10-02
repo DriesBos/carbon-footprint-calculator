@@ -8,7 +8,6 @@
   align-items: center
   width: 100%
   height: 100vh
-  // background: #3bad92
   background: #4F6485
 
 .content-block
@@ -20,7 +19,6 @@
   /* ---------- input block ---------- */
 
   .input-container
-    // min-height: 150px
     display: flex
     flex-direction: column
     justify-content: space-between
@@ -36,7 +34,7 @@
 
     input
       flex-grow: 1
-      min-width: 200px
+      min-width: 180px
       padding-right: 10px
 
     .select-container
@@ -45,7 +43,7 @@
       cursor: pointer
       display: flex
       align-items: center
-      padding-right: 10px
+      padding-right: 20px
     
   .input-toggle
     text-align: right
@@ -88,15 +86,10 @@ select
 /* ---------- output block ---------- */
 
 .output-block
-  width: 50vmin
-  height: 50vmin
-  background: white
   display: flex
   direction: column
   justify-content: center
   align-items: center
-  border-radius: 1000px
-  overflow: hidden
   text-align: center
 
   ul
@@ -105,7 +98,34 @@ select
     margin: 0
 
     li
-      margin-bottom: 6px
+      position: relative
+      display: flex
+      justify-content: center
+      height: 50px
+      min-width: 500px
+      border-radius: 1000px
+      margin-top: 25px
+      margin-bottom: 25px
+      line-height: 50px
+      overflow: hidden
+      .bar-text
+        position: absolute
+        top: 0
+        left: 20px
+        bottom: 0
+        line-height: 50px
+        z-index: 100
+        text-align: center
+        width: 100%
+      .animatedBar
+        // position: absolute
+        // top: 0
+        // left: 0
+        // right: 0
+        width: 0 
+        height: 100%
+        background: white
+        border-radius: 1000px
 
   span
     opacity: 0.4

@@ -1,7 +1,7 @@
 {
   "name": "flights-carbon-footprint",
   "version": "1.0.0",
-  "description": "Enter your  flightnumber, get your carbon footprint",
+  "description": "Flight emission calculator",
   "author": "Dries Bos",
   "private": true,
   "scripts": {
@@ -13,11 +13,11 @@
   "dependencies": {
     "@nuxt/webpack": "^2.8.1",
     "@nuxtjs/axios": "^5.6.0",
+    "animejs": "^3.1.0",
     "nuxt": "^2.0.0"
   },
   "devDependencies": {
     "node-sass": "^4.12.0",
-    "sass-loader": "^7.0.0",
-    "webpack": "^4.41.0"
+    "sass-loader": "^7.0.0"
   }
 }
