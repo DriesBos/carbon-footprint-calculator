@@ -56,17 +56,24 @@
         </div>
         <!------------ Output ------------>
 
-        <div v-if="result" class="output-block" key="output">
+        <div v-if="result" class="output-block" key="output" @mouseover="animate(70)">
           <ul>
             <li>
-              <div class="bar-text">Emission Footprint: {{ carbonTotal }}</div>
-              <div class="animatedBar"></div>
+              <div class="bar-text">flight footprint: {{ carbonTotal }}</div>
+              <div class="animatedBar one"></div>
             </li>
             <li>
-              <button @click="resetResults(result)">reset</button>
+              <div class="bar-text">european person average: {{ averageEuropean }}</div>
+              <div class="animatedBar two"></div>
+            </li>
+            <li>
+              <div class="bar-text">american person average: {{ averageAmerican }}</div>
+              <div class="animatedBar three"></div>
             </li>
           </ul>
-
+          <div class="input-toggle">
+            <p @click="resetResults(result)">reset</p>
+          </div>
           <p v-if="loading">Loading...</p>
           <p
             v-if="errored"
@@ -109,18 +116,31 @@ export default {
       errored: false,
       loading: false,
       seat: "economy",
-      carbonSeatMultiplier: false,
       carbonTotal: 100,
       carbonTotalBar: 70,
-      inputIsFlightNumber: true
+      inputIsFlightNumber: true,
+      averageEuropean: 7.2, // https://ec.europa.eu/eurostat/statistics-explained/index.php/Greenhouse_gas_emission_statistics_-_carbon_footprints
+      averageAmerican: 16.4 // https://greenliving.lovetoknow.com/What_Is_the_Average_Carbon_Footprint
     };
   },
   methods: {
-    animate: function() {
-      console.log("ANIME");
+    animate: function(value) {
+      console.log();
       anime({
-        targets: ".animatedBar",
-        width: 380,
+        targets: ".animatedBar.one",
+        width: `${value}%`,
+        duration: 800,
+        easing: 'easeInOutQuad'
+      });
+      anime({
+        targets: ".animatedBar.two",
+        width: '30%',
+        duration: 800,
+        easing: 'easeInOutQuad'
+      });
+      anime({
+        targets: ".animatedBar.three",
+        width: '45%',
         duration: 800,
         easing: 'easeInOutQuad'
       });
@@ -138,37 +158,40 @@ export default {
       this.arrivalResult = "";
       this.input = "";
       this.seat = "economy";
-      // this.inputFocus();
     },
     resetResults: function(result) {
       this.result = "";
-      console.log(this.result);
+      this.carbonTotal = 0
+      this.carbonTotalBar = 0
     },
 
-    submitFlightQuery: function(input) {
-      let inputTrimmed = input.trim() && input.replace(/ +/g, "");
-      console.log("INPUT", input);
-      if (inputTrimmed !== "") {
-        axios
-          .get(
-            `${aviationEdgeUri}flights?key=${aviationEdgeKey}&limit=1&flightIata=${inputTrimmed}`
-          )
-          .then(response => {
-            console.log("RESULT", response.data[0])
-            this.result = response.data[0]
-            this.departureResult = response.data[0].departure.icaoCode;
-            this.arrivalResult = response.data[0].arrival.icaoCode;
-            this.submitAirportQuery();
-          })
-          .catch(error => {
-            // this.errored = true;
-            console.log("submitFlightQuery ERROR", response.error);
-          });
-      } else {
-        document.getElementById("flightNumInput").placeholder =
-          "please enter a flightnumber";
-        document.getElementById("flightNumInput").focus();
-      }
+    submitFlightQuery: function() {
+      let inputTrimmed = this.input.trim() && this.input.replace(/ +/g, "");
+      this.carbonTotalBar = 666
+      this.carbonTotal = 1.6
+      this.result = 66
+      this.animate()
+      // if (inputTrimmed !== "") {
+      //   axios
+      //     .get(
+      //       `${aviationEdgeUri}flights?key=${aviationEdgeKey}&limit=1&flightIata=${inputTrimmed}`
+      //     )
+      //     .then(response => {
+      //       console.log("RESULT", response.data[0])
+      //       this.result = response.data[0]
+      //       this.departureResult = response.data[0].departure.icaoCode;
+      //       this.arrivalResult = response.data[0].arrival.icaoCode;
+      //       this.submitAirportQuery();
+      //     })
+      //     .catch(error => {
+      //       // this.errored = true;
+      //       console.log("submitFlightQuery ERROR", response.error);
+      //     });
+      // } else {
+      //   document.getElementById("flightNumInput").placeholder =
+      //     "please enter a flightnumber";
+      //   document.getElementById("flightNumInput").focus();
+      // }
       this.resetInput();
     },
 
@@ -186,11 +209,11 @@ export default {
           this.result = response.data.totals.distance_km;
           this.carbonTotal *= this.result / 0.5;
           this.animate()
+          this.resetInput();
         })
         .catch(error => {
           console.log(error);
         });
-      this.resetInput();
     }
   },
   mounted: function() {
