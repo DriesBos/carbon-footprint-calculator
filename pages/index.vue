@@ -118,7 +118,10 @@
                 <path d="M0 0h24v24H0z" fill="none" />
               </svg>
             </div>
-            <div class="bar-results-text">flight footprint: {{ carbonTotal }}t</div>
+            <div class="bar-results-text">
+              flight footprint: {{ carbonTotal }}
+              <span>tCO2</span>
+            </div>
             <div class="animateAverage one"></div>
           </li>
         </ul>
@@ -141,7 +144,10 @@
                 <path d="M0 0h24v24H0z" fill="none" />
               </svg>
             </div>
-            <div class="bar-results-text">european person average: {{ averageEuropean }}t</div>
+            <div class="bar-results-text">
+              european person average: {{ averageEuropean }}
+              <span>tCO2</span>
+            </div>
             <div class="animateAverage two"></div>
           </li>
           <li class="bar-results bar">
@@ -153,7 +159,10 @@
                 <path d="M0 0h24v24H0z" fill="none" />
               </svg>
             </div>
-            <div class="bar-results-text">american person average: {{ averageAmerican }}t</div>
+            <div class="bar-results-text">
+              american person average: {{ averageAmerican }}
+              <span>tCO2</span>
+            </div>
             <div class="animateAverage three"></div>
           </li>
         </ul>
