@@ -102,3 +102,10 @@ textarea {
 select[multiple] {
   vertical-align: top;
 }
+
+body,
+html,
+#__layout {
+  padding: 0;
+  margin: 0;
+}
