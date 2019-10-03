@@ -1,6 +1,5 @@
 <template>
   <div class="container" :data-depth="formDepth">
-    <!-- <div class="animatedPlane"></div> -->
     <div class="content-block">
       <transition name="content-change" mode="out-in">
         <!------------ Inputs ------------>
@@ -23,15 +22,15 @@
                 type="text"
               />
               <div class="select-container">
-                <select v-model="returnFlight" @change="returnFlightCalculation()">
-                  <option value="false">single</option>
-                  <option value="true">return</option>
+                <select v-model="returnFactor">
+                  <option value="1">single</option>
+                  <option value="2">return</option>
                 </select>
               </div>
               <div class="select-container">
-                <select v-model="seat" @change="seatCalculation()">
-                  <option value="economy">economy</option>
-                  <option value="business">business</option>
+                <select v-model="seatFactor">
+                  <option value="1">economy</option>
+                  <option value="2">business</option>
                 </select>
               </div>
               <button
@@ -72,15 +71,15 @@
                 type="text"
               />
               <div class="select-container">
-                <select v-model="returnFlight" @change="returnFlightCalculation()">
-                  <option value="false">single</option>
-                  <option value="true">return</option>
+                <select v-model="returnFactor">
+                  <option value="1">single</option>
+                  <option value="2">return</option>
                 </select>
               </div>
               <div class="select-container">
-                <select v-model="seat" @change="seatCalculation()">
-                  <option value="economy">economy</option>
-                  <option value="business">business</option>
+                <select v-model="seatFactor">
+                  <option value="1">economy</option>
+                  <option value="2">business</option>
                 </select>
               </div>
               <button
@@ -107,7 +106,7 @@
         </div>
       </transition>
       <!------------ Output ------------>
-      <div v-if="showOutput" class="output-block" key="output" @mouseover="animateAverage(70)">
+      <div v-if="showOutput" class="output-block" key="output" @mouseover="animateAverage">
         <ul>
           <li class="bar-results bar">
             <div class="bar-icon">
@@ -145,25 +144,10 @@
               </svg>
             </div>
             <div class="bar-results-text">
-              european person average: {{ averageEuropean }}
+              european person average: {{ perPersonAverage }}
               <span>tCO2</span>
             </div>
             <div class="animateAverage two"></div>
-          </li>
-          <li class="bar-results bar">
-            <div class="bar-icon">
-              <svg>
-                <path
-                  d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
-                />
-                <path d="M0 0h24v24H0z" fill="none" />
-              </svg>
-            </div>
-            <div class="bar-results-text">
-              american person average: {{ averageAmerican }}
-              <span>tCO2</span>
-            </div>
-            <div class="animateAverage three"></div>
           </li>
         </ul>
         <div @click="resetResults(result)" class="bar-toggle" title="reset values">
@@ -215,44 +199,38 @@ export default {
   data() {
     return {
       formDepth: 1,
+      input: "",
+      result: "",
       showInput: true,
       showOutput: false,
       showOffset: false,
-      input: "",
-      result: "",
-      offsetPlans: false,
       departureResult: "",
       arrivalResult: "",
       aircraftResult: "",
       distanceResult: "",
       errored: false,
       loading: false,
-      seat: "economy",
-      returnFlight: true,
-      carbonTotal: 100,
-      carbonTotalBar: 70,
-      inputIsFlightNumber: true,
-      averageEuropean: 7.2, // https://ec.europa.eu/eurostat/statistics-explained/index.php/Greenhouse_gas_emission_statistics_-_carbon_footprints
-      averageAmerican: 16.4 // https://greenliving.lovetoknow.com/What_Is_the_Average_Carbon_Footprint
+      seatFactor: 1,
+      returnFactor: 1,
+      carbonTotal: 0,
+      carbonTotalBar: 0,
+      perPersonAverage: 7.2,
+      inputIsFlightNumber: true
     };
   },
   methods: {
-    animateAverage: function(value) {
+    animateAverage: function() {
+      this.carbonTotalBar = (100 / this.perPersonAverage) * this.carbonTotal;
+      console.log(this.perPersonAverage, this.carbonTotal, this.carbonTotalBar);
       anime({
         targets: ".animateAverage.one",
-        width: `${value}%`,
+        width: `${this.carbonTotalBar}%`,
         duration: 800,
         easing: "easeInOutQuad"
       });
       anime({
         targets: ".animateAverage.two",
-        width: "30%",
-        duration: 800,
-        easing: "easeInOutQuad"
-      });
-      anime({
-        targets: ".animateAverage.three",
-        width: "45%",
+        width: "100%",
         duration: 800,
         easing: "easeInOutQuad"
       });
@@ -264,16 +242,6 @@ export default {
     },
     inputFocus: function() {
       document.getElementById("flightNumInput").focus();
-    },
-    seatCalculation: function() {
-      if (this.seat === "business") {
-        this.carbonTotal = this.carbonTotal * 2;
-      }
-    },
-    returnFlightCalculation: function() {
-      if ((this.returnFlight = true)) {
-        this.carbonTotal = this.carbonTotal * 2;
-      }
     },
     resetInput: function() {
       this.departureResult = "";
@@ -290,65 +258,73 @@ export default {
       this.showOutput = false;
       this.showOffset = false;
     },
-
+    carbonCalculation: function() {
+      // this.carbonTotal = this.carbonTotal.toFixed(1);
+    },
     submitFlightQuery: function() {
       let inputTrimmed = this.input.trim() && this.input.replace(/ +/g, "");
-      this.carbonTotalBar = 666;
-      this.carbonTotal = 1.6;
-      this.formDepth = 2;
-      this.showOutput = true;
-      this.showInput = false;
-      this.result = 66;
       this.animateAverage();
-      // if (inputTrimmed !== "") {
-      //   axios
-      //     .get(
-      //       `${aviationEdgeUri}flights?key=${aviationEdgeKey}&limit=1&flightIata=${inputTrimmed}`
-      //     )
-      //     .then(response => {
-      //       console.log("RESULT", response.data[0])
-      //       this.result = response.data[0]
-      //       this.departureResult = response.data[0].departure.icaoCode;
-      //       this.arrivalResult = response.data[0].arrival.icaoCode;
-      //       this.submitAirportQuery();
-      //     })
-      //     .catch(error => {
-      //       // this.errored = true;
-      //       console.log("submitFlightQuery ERROR", response.error);
-      //     });
-      // } else {
-      //   document.getElementById("flightNumInput").placeholder =
-      //     "please enter a flightnumber";
-      //   document.getElementById("flightNumInput").focus();
-      // }
+      if (inputTrimmed !== "") {
+        axios
+          .get(
+            `${aviationEdgeUri}flights?key=${aviationEdgeKey}&limit=1&flightIata=${inputTrimmed}`
+          )
+          .then(response => {
+            console.log("RESULT", response.data[0]);
+            this.result = response.data[0];
+            this.departureResult = response.data[0].departure.icaoCode;
+            this.arrivalResult = response.data[0].arrival.icaoCode;
+            this.submitAirportQuery();
+          })
+          .catch(error => {
+            // this.errored = true;
+            console.log("submitFlightQuery ERROR", response.error);
+          });
+      } else {
+        document.getElementById("flightNumInput").placeholder =
+          "please enter a flightnumber";
+        document.getElementById("flightNumInput").focus();
+      }
       this.resetInput();
     },
 
     submitAirportQuery: function() {
-      axios({
-        method: "GET",
-        url: `${greatCircleMapperUri}airports/route/${this.departureResult}-${this.arrivalResult}/510`,
-        headers: {
-          "x-rapidapi-host": "greatcirclemapper.p.rapidapi.com",
-          "x-rapidapi-key": `${greatCircleMapperKey}`,
-          vary: "Accept-Encoding"
-        }
-      })
-        .then(response => {
-          this.result = response.data.totals.distance_km;
-          this.carbonTotal *= this.result / 0.5;
-          this.animate();
-          this.formDepth = 2;
-          this.resetInput();
-        })
-        .catch(error => {
-          console.log(error);
-        });
+      let carbonCalculation;
+      // axios({
+      //   method: "GET",
+      //   url: `${greatCircleMapperUri}airports/route/${this.departureResult}-${this.arrivalResult}/510`,
+      //   headers: {
+      //     "x-rapidapi-host": "greatcirclemapper.p.rapidapi.com",
+      //     "x-rapidapi-key": `${greatCircleMapperKey}`,
+      //     vary: "Accept-Encoding"
+      //   }
+      // })
+      //   .then(response => {
+      //     this.distanceResult = response.data.totals.distance_km;
+      //     // console.log(this.distanceResult, this.seatFactor, this.returnFactor);
+      //     this.carbonCalculation =
+      //       0.00032214 *
+      //       this.distanceResult *
+      //       this.seatFactor *
+      //       this.returnFactor;
+      //     this.carbonTotal = this.carbonCalculation.toFixed(1);
+      //     this.formDepth = 2;
+      //     this.showInput = false;
+      //     this.showOutput = true;
+      //     this.animateAverage();
+      //   })
+      //   .catch(error => {
+      //     console.log(error);
+      //   });
+      this.carbonTotal = 2.2;
+      this.formDepth = 2;
+      this.showInput = false;
+      this.showOutput = true;
+      this.animateAverage();
     }
   },
   mounted: function() {
-    // this.inputFocus(); // TODO: make input component so this works on component render
-    // this.animatePlanes()
+    this.inputFocus(); // TODO: make input component so this works on component render
   }
 };
 </script>
