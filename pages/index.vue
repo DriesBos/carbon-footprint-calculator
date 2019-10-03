@@ -1,11 +1,20 @@
 <template>
-  <div class="container">
+  <div class="container" :data-depth="formDepth">
+    <!-- <div class="animatedPlane"></div> -->
     <div class="content-block">
       <transition name="content-change" mode="out-in">
         <!------------ Inputs ------------>
         <div v-if="!result" class="input-container" key="flightNumber">
           <transition name="content-change" mode="out-in">
-            <div v-if="inputIsFlightNumber" class="input-block">
+            <div v-if="inputIsFlightNumber" class="input-block bar">
+              <div class="bar-icon">
+                <svg>
+                  <path
+                    d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"
+                  />
+                  <path d="M0 0h24v24H0z" fill="none" />
+                </svg>
+              </div>
               <input
                 id="flightNumInput"
                 v-model="input"
@@ -19,10 +28,25 @@
                   <option value="business">business seat</option>
                 </select>
               </div>
-              <button @click="submitFlightQuery(input)" class="reset-button">submit</button>
+              <button @click="submitFlightQuery(input)" class="bar-button">
+                <div class="bar-icon">
+                  <svg>
+                    <path d="M0 0h24v24H0z" fill="none" />
+                    <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z" />
+                  </svg>
+                </div>
+              </button>
             </div>
 
-            <div v-else class="input-block" key="airports">
+            <div v-else class="input-block bar" key="airports">
+              <div class="bar-icon">
+                <svg>
+                  <path
+                    d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"
+                  />
+                  <path d="M0 0h24v24H0z" fill="none" />
+                </svg>
+              </div>
               <input
                 id="departureInput"
                 v-model="departureResult"
@@ -43,11 +67,18 @@
                   <option value="business">business seat</option>
                 </select>
               </div>
-              <button @click="submitAirportQuery()" class="reset-button">submit</button>
+              <button @click="submitAirportQuery()" class="bar-button">
+                <div class="bar-icon">
+                  <svg>
+                    <path d="M0 0h24v24H0z" fill="none" />
+                    <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z" />
+                  </svg>
+                </div>
+              </button>
             </div>
           </transition>
 
-          <div @click="inputIsFlightNumber = !inputIsFlightNumber" class="input-toggle">
+          <div @click="inputIsFlightNumber = !inputIsFlightNumber" class="bar-toggle">
             <transition name="content-change" mode="out-in">
               <p v-if="inputIsFlightNumber" key="airports">calculate by airports</p>
               <p v-else key="flightNumber">calculate by flight-number</p>
@@ -56,23 +87,52 @@
         </div>
         <!------------ Output ------------>
 
-        <div v-if="result" class="output-block" key="output" @mouseover="animate(70)">
+        <div v-if="result" class="output-block" key="output" @mouseover="animateAverage(70)">
           <ul>
-            <li>
-              <div class="bar-text">flight footprint: {{ carbonTotal }}</div>
-              <div class="animatedBar one"></div>
+            <li class="bar-results bar">
+              <div class="bar-icon">
+                <svg>
+                  <path
+                    d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"
+                  />
+                  <path d="M0 0h24v24H0z" fill="none" />
+                </svg>
+              </div>
+              <div class="bar-results-text">flight footprint: {{ carbonTotal }}</div>
+              <div class="animateAverage one"></div>
             </li>
-            <li>
-              <div class="bar-text">european person average: {{ averageEuropean }}</div>
-              <div class="animatedBar two"></div>
+            <li class="bar-results bar">
+              <div class="bar-icon">
+                <svg>
+                  <path
+                    d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
+                  />
+                  <path d="M0 0h24v24H0z" fill="none" />
+                </svg>
+              </div>
+              <div class="bar-results-text">european person average: {{ averageEuropean }}</div>
+              <div class="animateAverage two"></div>
             </li>
-            <li>
-              <div class="bar-text">american person average: {{ averageAmerican }}</div>
-              <div class="animatedBar three"></div>
+            <li class="bar-results bar">
+              <div class="bar-icon">
+                <svg>
+                  <path
+                    d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
+                  />
+                  <path d="M0 0h24v24H0z" fill="none" />
+                </svg>
+              </div>
+              <div class="bar-results-text">american person average: {{ averageAmerican }}</div>
+              <div class="animateAverage three"></div>
             </li>
           </ul>
-          <div class="input-toggle">
-            <p @click="resetResults(result)">reset</p>
+          <div @click="resetResults(result)" class="bar-toggle">
+            <svg class="reset">
+              <path
+                d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"
+              />
+              <path d="M0 0h24v24H0z" fill="none" />
+            </svg>
           </div>
           <p v-if="loading">Loading...</p>
           <p
@@ -95,7 +155,7 @@
 // if loading + if error
 // Approach scientist for proper calculations
 import axios from "axios";
-import anime from "animejs"
+import anime from "animejs";
 import {
   aviationEdgeKey,
   aviationEdgeUri,
@@ -107,6 +167,7 @@ import {
 export default {
   data() {
     return {
+      formDepth: 1,
       input: "",
       result: "",
       departureResult: "",
@@ -124,25 +185,24 @@ export default {
     };
   },
   methods: {
-    animate: function(value) {
-      console.log();
+    animateAverage: function(value) {
       anime({
-        targets: ".animatedBar.one",
+        targets: ".animateAverage.one",
         width: `${value}%`,
         duration: 800,
-        easing: 'easeInOutQuad'
+        easing: "easeInOutQuad"
       });
       anime({
-        targets: ".animatedBar.two",
-        width: '30%',
+        targets: ".animateAverage.two",
+        width: "30%",
         duration: 800,
-        easing: 'easeInOutQuad'
+        easing: "easeInOutQuad"
       });
       anime({
-        targets: ".animatedBar.three",
-        width: '45%',
+        targets: ".animateAverage.three",
+        width: "45%",
         duration: 800,
-        easing: 'easeInOutQuad'
+        easing: "easeInOutQuad"
       });
     },
     inputFocus: function() {
@@ -161,16 +221,18 @@ export default {
     },
     resetResults: function(result) {
       this.result = "";
-      this.carbonTotal = 0
-      this.carbonTotalBar = 0
+      this.carbonTotal = 0;
+      this.carbonTotalBar = 0;
+      this.formDepth = 1;
     },
 
     submitFlightQuery: function() {
       let inputTrimmed = this.input.trim() && this.input.replace(/ +/g, "");
-      this.carbonTotalBar = 666
-      this.carbonTotal = 1.6
-      this.result = 66
-      this.animate()
+      this.carbonTotalBar = 666;
+      this.carbonTotal = 1.6;
+      this.formDepth = 2;
+      this.result = 66;
+      this.animateAverage();
       // if (inputTrimmed !== "") {
       //   axios
       //     .get(
@@ -208,7 +270,8 @@ export default {
         .then(response => {
           this.result = response.data.totals.distance_km;
           this.carbonTotal *= this.result / 0.5;
-          this.animate()
+          this.animate();
+          this.formDepth = 2;
           this.resetInput();
         })
         .catch(error => {
@@ -218,6 +281,7 @@ export default {
   },
   mounted: function() {
     this.inputFocus(); // TODO: make input component so this works on component render
+    // this.animatePlanes()
   }
 };
 </script>

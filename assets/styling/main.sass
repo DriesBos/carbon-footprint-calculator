@@ -1,4 +1,62 @@
-/* ---------- content containers ----------
+/* ---------- animated planes ---------- */
+.animatedPlane
+  position: absolute
+  top: 50%
+  left: 0px
+  height: 25px
+  width: 10px
+  background: white
+  opacity: .7
+
+/* ---------- archetypes ---------- */
+
+.bar
+  height: 50px
+  border-radius: 12px
+  margin-top: 20px
+  margin-bottom: 20px
+  line-height: 50px
+  overflow: hidden
+
+.bar-toggle
+  display: flex
+  justify-content: flex-end
+  padding-right: 10px
+  opacity: .5
+  p
+    text-align: right
+    cursor: pointer
+  svg
+    width: 25px
+    height: 25px
+    cursor: pointer
+    .reset
+      transform: rotate(230deg)
+    
+.bar-button
+  height: 50px
+  padding-left: 20px
+  padding-right: 20px
+  color: white
+  background: #e34c29
+  cursor: pointer
+  line-height: 50px
+  overflow: hidden
+
+.bar-icon
+  position: relative
+  width: 50px
+  height: 50px
+  z-index: 100
+  svg
+    position: absolute
+    top: 50%
+    left: 50%
+    transform: translate(-50%, -50%)
+    width: 25px
+    height: 25px
+
+/* ---------- content containers ---------- */
 
 .container
   position: relative
@@ -8,7 +66,13 @@
   align-items: center
   width: 100%
   height: 100vh
-  background: #4F6485
+  transition: background .5s easeInOut
+  &[data-depth="1"]
+    background: #435651
+  &[data-depth="2"]
+    background: #6A947F
+  &[data-depth="3"]
+    background: #A2C4AB
 
 .content-block
   display: flex
@@ -24,16 +88,13 @@
     justify-content: space-between
 
   .input-block
-    height: 50px
     background: white
     display: flex
     flex-wrap: nowrap
-    border-radius: 1000px
-    overflow: hidden
-    padding-left: 20px
 
     input
       flex-grow: 1
+      height: 100%
       min-width: 180px
       padding-right: 10px
 
@@ -44,13 +105,6 @@
       display: flex
       align-items: center
       padding-right: 20px
-    
-  .input-toggle
-    text-align: right
-    padding: 10px
-    padding-right: 20px
-    opacity: .5
-    cursor: pointer
 
 input, select, button
   font-size: 16px
@@ -65,20 +119,11 @@ input
   &::placeholder
     text-transform: none
 
-button
-  background: #e34c29
-  color: white !important
-  border-radius: 100px
-  padding-left: 20px
-  padding-right: 20px
-  cursor: pointer
 
 select
   appearance: none
   line-height: normal
   background: white
-  border-radius: 0
-  border: 0px
   text-shadow: 0 0 0 #000
   cursor: pointer
   text-decoration: underline
@@ -92,40 +137,22 @@ select
     list-style: none
     padding: 0
     margin: 0
-    li
-      position: relative
-      display: flex
-      justify-content: flex-start
-      height: 50px
-      min-width: 500px
-      border-radius: 1000px
-      margin-top: 25px
-      margin-bottom: 25px
-      line-height: 50px
-      overflow: hidden
-      background: white
-      &:first-child
-        margin-top: 0
-      &:last-child
-        margin-bottom: 0
-      .bar-text
-        position: absolute
-        top: 0
-        left: 20px
-        bottom: 0
-        line-height: 50px
-        z-index: 100
-        text-align: left
-        width: 100%
-      .animatedBar
-        width: 0 
-        height: 100%
-        background: #e34c29
-        z-index: 1
-        border-radius: 1000px
-
-// p
-//   margin-bottom: 12px
+  .bar-results
+    position: relative
+    display: flex
+    justify-content: flex-start
+    min-width: 500px
+    background: white
+    .bar-results-text
+      z-index: 100
+      text-align: left
+    .animateAverage
+      position: absolute
+      left: 0
+      top: 0
+      bottom: 0
+      width: 0 
+      background: #e34c29
 
 input, select, button
   font-size: 14px
