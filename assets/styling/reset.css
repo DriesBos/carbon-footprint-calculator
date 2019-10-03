@@ -109,3 +109,10 @@ html,
   padding: 0;
   margin: 0;
 }
+
+p {
+  margin-block-start: 0 !important;
+  margin-block-end: 0 !important;
+  margin-inline-start: 0 !important;
+  margin-inline-end: 0 !important;
+}
