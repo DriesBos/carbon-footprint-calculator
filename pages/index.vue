@@ -2,9 +2,9 @@
   <div class="container" :data-depth="formDepth">
     <!-- <div class="animatedPlane"></div> -->
     <div class="content-block">
-      <transition name="content-change" mode="out-in">
+      <transition-group name="content-change">
         <!------------ Inputs ------------>
-        <div v-if="!result" class="input-container" key="flightNumber">
+        <div v-if="showInput" class="input-container" key="input">
           <transition name="content-change" mode="out-in">
             <div v-if="inputIsFlightNumber" class="input-block bar">
               <div class="bar-icon">
@@ -28,7 +28,11 @@
                   <option value="business">business seat</option>
                 </select>
               </div>
-              <button @click="submitFlightQuery(input)" class="bar-button">
+              <button
+                @click="submitFlightQuery(input)"
+                class="bar-button"
+                title="next: calculate footprint"
+              >
                 <div class="bar-icon">
                   <svg>
                     <path d="M0 0h24v24H0z" fill="none" />
@@ -67,7 +71,11 @@
                   <option value="business">business seat</option>
                 </select>
               </div>
-              <button @click="submitAirportQuery()" class="bar-button">
+              <button
+                @click="submitAirportQuery()"
+                class="bar-button"
+                title="next: calculate footprint"
+              >
                 <div class="bar-icon">
                   <svg>
                     <path d="M0 0h24v24H0z" fill="none" />
@@ -86,8 +94,7 @@
           </div>
         </div>
         <!------------ Output ------------>
-
-        <div v-if="result" class="output-block" key="output" @mouseover="animateAverage(70)">
+        <div v-if="showOutput" class="output-block" key="output" @mouseover="animateAverage(70)">
           <ul>
             <li class="bar-results bar">
               <div class="bar-icon">
@@ -98,9 +105,20 @@
                   <path d="M0 0h24v24H0z" fill="none" />
                 </svg>
               </div>
-              <div class="bar-results-text">flight footprint: {{ carbonTotal }}</div>
+              <div class="bar-results-text">flight footprint: {{ carbonTotal }}t</div>
               <div class="animateAverage one"></div>
             </li>
+          </ul>
+          <button @click="offsetFootprint" class="bar-button" title="next: offset footprint">
+            <p>offset {{ carbonTotal }} tonnes</p>
+            <div class="bar-icon">
+              <svg>
+                <path d="M0 0h24v24H0z" fill="none" />
+                <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z" />
+              </svg>
+            </div>
+          </button>
+          <ul>
             <li class="bar-results bar">
               <div class="bar-icon">
                 <svg>
@@ -110,7 +128,7 @@
                   <path d="M0 0h24v24H0z" fill="none" />
                 </svg>
               </div>
-              <div class="bar-results-text">european person average: {{ averageEuropean }}</div>
+              <div class="bar-results-text">european person average: {{ averageEuropean }}t</div>
               <div class="animateAverage two"></div>
             </li>
             <li class="bar-results bar">
@@ -122,11 +140,11 @@
                   <path d="M0 0h24v24H0z" fill="none" />
                 </svg>
               </div>
-              <div class="bar-results-text">american person average: {{ averageAmerican }}</div>
+              <div class="bar-results-text">american person average: {{ averageAmerican }}t</div>
               <div class="animateAverage three"></div>
             </li>
           </ul>
-          <div @click="resetResults(result)" class="bar-toggle">
+          <div @click="resetResults(result)" class="bar-toggle" title="reset values">
             <svg class="reset">
               <path
                 d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"
@@ -139,7 +157,24 @@
             v-if="errored"
           >We're sorry, we're not able to retrieve this resultrmation at the moment, please try back later</p>
         </div>
-      </transition>
+        <!------------ Output ------------>
+        <div v-if="showOffset" class="offset-block" key="offset">
+          <ul>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+          </ul>
+          <div @click="resetResults" class="bar-toggle" title="reset values">
+            <svg class="reset">
+              <path
+                d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"
+              />
+              <path d="M0 0h24v24H0z" fill="none" />
+            </svg>
+          </div>
+        </div>
+      </transition-group>
     </div>
   </div>
 </template>
@@ -168,8 +203,12 @@ export default {
   data() {
     return {
       formDepth: 1,
+      showInput: false,
+      showOutput: false,
+      showOffset: true,
       input: "",
       result: "",
+      offsetPlans: false,
       departureResult: "",
       arrivalResult: "",
       aircraftResult: "",
@@ -205,6 +244,11 @@ export default {
         easing: "easeInOutQuad"
       });
     },
+    offsetFootprint: function() {
+      this.showOffset = true;
+      this.showOutput = false;
+      this.formDepth = 3;
+    },
     inputFocus: function() {
       document.getElementById("flightNumInput").focus();
     },
@@ -219,11 +263,14 @@ export default {
       this.input = "";
       this.seat = "economy";
     },
-    resetResults: function(result) {
+    resetResults: function() {
       this.result = "";
       this.carbonTotal = 0;
       this.carbonTotalBar = 0;
       this.formDepth = 1;
+      this.showInput = true;
+      this.showOutput = false;
+      this.showOffset = false;
     },
 
     submitFlightQuery: function() {
@@ -231,6 +278,8 @@ export default {
       this.carbonTotalBar = 666;
       this.carbonTotal = 1.6;
       this.formDepth = 2;
+      this.showInput = false;
+      this.showOutput = true;
       this.result = 66;
       this.animateAverage();
       // if (inputTrimmed !== "") {
@@ -280,7 +329,7 @@ export default {
     }
   },
   mounted: function() {
-    this.inputFocus(); // TODO: make input component so this works on component render
+    // this.inputFocus(); // TODO: make input component so this works on component render
     // this.animatePlanes()
   }
 };
