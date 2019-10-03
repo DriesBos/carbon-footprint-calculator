@@ -110,7 +110,7 @@
             </li>
           </ul>
           <button @click="offsetFootprint" class="bar-button" title="next: offset footprint">
-            <p>offset {{ carbonTotal }} tonnes</p>
+            offset {{ carbonTotal }} tonnes
             <div class="bar-icon">
               <svg>
                 <path d="M0 0h24v24H0z" fill="none" />
@@ -180,15 +180,6 @@
 </template>
 
 <script>
-// TODO
-// 1 = Learn how to pass data as arguments into methods functions and when 'this.' is needed and how to output the data
-// 2 = use the submitAirportQuery WITHIN the submitFlightQuery to calculate carbonTotal
-// 3 = UX -> toggle between airport/flightnr input + animate carbonTotal result with AnimeJS
-// TODO LATER
-// Add averages (EU first + later get visitor country data)
-// Use aircarrier + flightheight in calculations
-// if loading + if error
-// Approach scientist for proper calculations
 import axios from "axios";
 import anime from "animejs";
 import {
@@ -203,9 +194,9 @@ export default {
   data() {
     return {
       formDepth: 1,
-      showInput: false,
+      showInput: true,
       showOutput: false,
-      showOffset: true,
+      showOffset: false,
       input: "",
       result: "",
       offsetPlans: false,
