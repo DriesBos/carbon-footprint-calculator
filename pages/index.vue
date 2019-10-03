@@ -2,7 +2,7 @@
   <div class="container" :data-depth="formDepth">
     <!-- <div class="animatedPlane"></div> -->
     <div class="content-block">
-      <transition-group name="content-change">
+      <transition name="content-change" mode="out-in">
         <!------------ Inputs ------------>
         <div v-if="showInput" class="input-container" key="input">
           <transition name="content-change" mode="out-in">
@@ -93,88 +93,88 @@
             </transition>
           </div>
         </div>
-        <!------------ Output ------------>
-        <div v-if="showOutput" class="output-block" key="output" @mouseover="animateAverage(70)">
-          <ul>
-            <li class="bar-results bar">
-              <div class="bar-icon">
-                <svg>
-                  <path
-                    d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"
-                  />
-                  <path d="M0 0h24v24H0z" fill="none" />
-                </svg>
-              </div>
-              <div class="bar-results-text">flight footprint: {{ carbonTotal }}t</div>
-              <div class="animateAverage one"></div>
-            </li>
-          </ul>
-          <button @click="offsetFootprint" class="bar-button" title="next: offset footprint">
-            offset {{ carbonTotal }} tonnes
+      </transition>
+      <!------------ Output ------------>
+      <div v-if="showOutput" class="output-block" key="output" @mouseover="animateAverage(70)">
+        <ul>
+          <li class="bar-results bar">
             <div class="bar-icon">
               <svg>
+                <path
+                  d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"
+                />
                 <path d="M0 0h24v24H0z" fill="none" />
-                <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z" />
               </svg>
             </div>
-          </button>
-          <ul>
-            <li class="bar-results bar">
-              <div class="bar-icon">
-                <svg>
-                  <path
-                    d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
-                  />
-                  <path d="M0 0h24v24H0z" fill="none" />
-                </svg>
-              </div>
-              <div class="bar-results-text">european person average: {{ averageEuropean }}t</div>
-              <div class="animateAverage two"></div>
-            </li>
-            <li class="bar-results bar">
-              <div class="bar-icon">
-                <svg>
-                  <path
-                    d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
-                  />
-                  <path d="M0 0h24v24H0z" fill="none" />
-                </svg>
-              </div>
-              <div class="bar-results-text">american person average: {{ averageAmerican }}t</div>
-              <div class="animateAverage three"></div>
-            </li>
-          </ul>
-          <div @click="resetResults(result)" class="bar-toggle" title="reset values">
-            <svg class="reset">
-              <path
-                d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"
-              />
+            <div class="bar-results-text">flight footprint: {{ carbonTotal }}t</div>
+            <div class="animateAverage one"></div>
+          </li>
+        </ul>
+        <button @click="offsetFootprint" class="bar-button" title="next: offset footprint">
+          offset
+          <div class="bar-icon">
+            <svg>
               <path d="M0 0h24v24H0z" fill="none" />
+              <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z" />
             </svg>
           </div>
-          <p v-if="loading">Loading...</p>
-          <p
-            v-if="errored"
-          >We're sorry, we're not able to retrieve this resultrmation at the moment, please try back later</p>
+        </button>
+        <ul>
+          <li class="bar-results bar">
+            <div class="bar-icon">
+              <svg>
+                <path
+                  d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
+                />
+                <path d="M0 0h24v24H0z" fill="none" />
+              </svg>
+            </div>
+            <div class="bar-results-text">european person average: {{ averageEuropean }}t</div>
+            <div class="animateAverage two"></div>
+          </li>
+          <li class="bar-results bar">
+            <div class="bar-icon">
+              <svg>
+                <path
+                  d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
+                />
+                <path d="M0 0h24v24H0z" fill="none" />
+              </svg>
+            </div>
+            <div class="bar-results-text">american person average: {{ averageAmerican }}t</div>
+            <div class="animateAverage three"></div>
+          </li>
+        </ul>
+        <div @click="resetResults(result)" class="bar-toggle" title="reset values">
+          <svg class="reset">
+            <path
+              d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"
+            />
+            <path d="M0 0h24v24H0z" fill="none" />
+          </svg>
         </div>
-        <!------------ Output ------------>
-        <div v-if="showOffset" class="offset-block" key="offset">
-          <ul>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-          </ul>
-          <div @click="resetResults" class="bar-toggle" title="reset values">
-            <svg class="reset">
-              <path
-                d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"
-              />
-              <path d="M0 0h24v24H0z" fill="none" />
-            </svg>
-          </div>
+        <p v-if="loading">Loading...</p>
+        <p
+          v-if="errored"
+        >We're sorry, we're not able to retrieve this resultrmation at the moment, please try back later</p>
+      </div>
+      <!------------ Output ------------>
+      <div v-if="showOffset" class="offset-block" key="offset">
+        <ul>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+        </ul>
+        <div @click="resetResults" class="bar-toggle" title="reset values">
+          <svg class="reset">
+            <path
+              d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"
+            />
+            <path d="M0 0h24v24H0z" fill="none" />
+          </svg>
         </div>
-      </transition-group>
+      </div>
     </div>
   </div>
 </template>
