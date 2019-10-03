@@ -23,9 +23,15 @@
                 type="text"
               />
               <div class="select-container">
+                <select v-model="returnFlight" @change="returnFlightCalculation()">
+                  <option value="false">single</option>
+                  <option value="true">return</option>
+                </select>
+              </div>
+              <div class="select-container">
                 <select v-model="seat" @change="seatCalculation()">
-                  <option value="economy">economy seat</option>
-                  <option value="business">business seat</option>
+                  <option value="economy">economy</option>
+                  <option value="business">business</option>
                 </select>
               </div>
               <button
@@ -66,9 +72,15 @@
                 type="text"
               />
               <div class="select-container">
+                <select v-model="returnFlight" @change="returnFlightCalculation()">
+                  <option value="false">single</option>
+                  <option value="true">return</option>
+                </select>
+              </div>
+              <div class="select-container">
                 <select v-model="seat" @change="seatCalculation()">
-                  <option value="economy">economy seat</option>
-                  <option value="business">business seat</option>
+                  <option value="economy">economy</option>
+                  <option value="business">business</option>
                 </select>
               </div>
               <button
@@ -207,6 +219,7 @@ export default {
       errored: false,
       loading: false,
       seat: "economy",
+      returnFlight: true,
       carbonTotal: 100,
       carbonTotalBar: 70,
       inputIsFlightNumber: true,
@@ -248,6 +261,11 @@ export default {
         this.carbonTotal = this.carbonTotal * 2;
       }
     },
+    returnFlightCalculation: function() {
+      if ((this.returnFlight = true)) {
+        this.carbonTotal = this.carbonTotal * 2;
+      }
+    },
     resetInput: function() {
       this.departureResult = "";
       this.arrivalResult = "";
@@ -269,8 +287,8 @@ export default {
       this.carbonTotalBar = 666;
       this.carbonTotal = 1.6;
       this.formDepth = 2;
-      this.showInput = false;
       this.showOutput = true;
+      this.showInput = false;
       this.result = 66;
       this.animateAverage();
       // if (inputTrimmed !== "") {
