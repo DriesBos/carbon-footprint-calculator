@@ -97,6 +97,9 @@
             </div>
           </transition>
 
+          <div @click="toOutputPage" class="bar-toggle">
+            <p>to output page (development)</p>
+          </div>
           <div @click="inputIsFlightNumber = !inputIsFlightNumber" class="bar-toggle">
             <transition name="content-change" mode="out-in">
               <p v-if="inputIsFlightNumber" key="airports">calculate by airports</p>
@@ -124,15 +127,6 @@
             <div class="animateAverage one"></div>
           </li>
         </ul>
-        <button @click="offsetFootprint" class="bar-button" title="next: offset footprint">
-          offset
-          <div class="bar-icon">
-            <svg>
-              <path d="M0 0h24v24H0z" fill="none" />
-              <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z" />
-            </svg>
-          </div>
-        </button>
         <ul>
           <li class="bar-results bar">
             <div class="bar-icon">
@@ -186,7 +180,6 @@ export default {
       result: "",
       showInput: true,
       showOutput: false,
-      showOffset: false,
       departureResult: "",
       arrivalResult: "",
       aircraftResult: "",
@@ -202,6 +195,10 @@ export default {
     };
   },
   methods: {
+    toOutputPage: function() {
+      this.showInput = false;
+      this.showOutput = true;
+    },
     animateAverage: function() {
       this.carbonTotalBar = (100 / this.perPersonAverage) * this.carbonTotal;
       console.log(this.perPersonAverage, this.carbonTotal, this.carbonTotalBar);
@@ -217,11 +214,6 @@ export default {
         duration: 800,
         easing: "easeInOutQuad"
       });
-    },
-    offsetFootprint: function() {
-      this.showOffset = true;
-      this.showOutput = false;
-      this.formDepth = 3;
     },
     inputFocus: function() {
       document.getElementById("flightNumInput").focus();
@@ -239,7 +231,6 @@ export default {
       this.formDepth = 1;
       this.showInput = true;
       this.showOutput = false;
-      this.showOffset = false;
     },
     carbonCalculation: function() {
       // this.carbonTotal = this.carbonTotal.toFixed(1);
