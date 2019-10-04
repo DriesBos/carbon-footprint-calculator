@@ -211,7 +211,7 @@ export default {
       errored: false,
       loading: false,
       seatFactor: 1,
-      returnFactor: 1,
+      returnFactor: 2,
       carbonTotal: 0,
       carbonTotalBar: 0,
       perPersonAverage: 7.2,
@@ -290,36 +290,35 @@ export default {
 
     submitAirportQuery: function() {
       let carbonCalculation;
-      // axios({
-      //   method: "GET",
-      //   url: `${greatCircleMapperUri}airports/route/${this.departureResult}-${this.arrivalResult}/510`,
-      //   headers: {
-      //     "x-rapidapi-host": "greatcirclemapper.p.rapidapi.com",
-      //     "x-rapidapi-key": `${greatCircleMapperKey}`,
-      //     vary: "Accept-Encoding"
-      //   }
-      // })
-      //   .then(response => {
-      //     this.distanceResult = response.data.totals.distance_km;
-      //     // console.log(this.distanceResult, this.seatFactor, this.returnFactor);
-      //     this.carbonCalculation =
-      //       0.00032214 *
-      //       this.distanceResult *
-      //       this.seatFactor *
-      //       this.returnFactor;
-      //     this.carbonTotal = this.carbonCalculation.toFixed(1);
-      //     this.formDepth = 2;
-      //     this.showInput = false;
-      //     this.showOutput = true;
-      //     this.animateAverage();
-      //   })
-      //   .catch(error => {
-      //     console.log(error);
-      //   });
-      this.carbonTotal = 2.2;
-      this.formDepth = 2;
-      this.showInput = false;
-      this.showOutput = true;
+      axios({
+        method: "GET",
+        url: `${greatCircleMapperUri}airports/route/${this.departureResult}-${this.arrivalResult}/510`,
+        headers: {
+          "x-rapidapi-host": "greatcirclemapper.p.rapidapi.com",
+          "x-rapidapi-key": `${greatCircleMapperKey}`,
+          vary: "Accept-Encoding"
+        }
+      })
+        .then(response => {
+          this.distanceResult = response.data.totals.distance_km;
+          this.carbonCalculation =
+            0.00032214 *
+            this.distanceResult *
+            this.seatFactor *
+            this.returnFactor;
+          this.carbonTotal = this.carbonCalculation.toFixed(1);
+          this.formDepth = 2;
+          this.showInput = false;
+          this.showOutput = true;
+          this.animateAverage();
+        })
+        .catch(error => {
+          console.log(error);
+        });
+      // this.carbonTotal = 2.2;
+      // this.formDepth = 2;
+      // this.showInput = false;
+      // this.showOutput = true;
       this.animateAverage();
     }
   },
