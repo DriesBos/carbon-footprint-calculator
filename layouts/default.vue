@@ -6,10 +6,11 @@
 
 <script>
 // TODO
-// 1. Get calculations right + animate calculations
-// 2. Connect Storyblok
+// - Get user IP via express.js + add averages
+// - Get calculations right + animate calculations
+// - Add averages
+// - Autocomplete airport input
 // TODO LATER
-// Add averages (EU first + later get visitor country data)
 // Use aircarrier + flightheight in calculations
 // if loading + if error
 // Approach scientist for proper calculations
