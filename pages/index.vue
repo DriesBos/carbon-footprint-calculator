@@ -173,27 +173,25 @@ import {
 } from "~/plugins/config";
 
 export default {
-  data() {
-    return {
-      formDepth: 1,
-      input: "",
-      result: "",
-      showInput: true,
-      showOutput: false,
-      departureResult: "",
-      arrivalResult: "",
-      aircraftResult: "",
-      distanceResult: "",
-      errored: false,
-      loading: false,
-      seatFactor: 1,
-      returnFactor: 2,
-      carbonTotal: 0,
-      carbonTotalBar: 0,
-      perPersonAverage: 7.2,
-      inputIsFlightNumber: true
-    };
-  },
+  data: () => ({
+    formDepth: 1,
+    input: "",
+    result: "",
+    showInput: true,
+    showOutput: false,
+    departureResult: "",
+    arrivalResult: "",
+    aircraftResult: "",
+    distanceResult: "",
+    errored: false,
+    loading: false,
+    seatFactor: 1,
+    returnFactor: 2,
+    carbonTotal: 0,
+    carbonTotalBar: 0,
+    perPersonAverage: 7.2,
+    inputIsFlightNumber: true
+  }),
   methods: {
     toOutputPage: function() {
       this.showInput = false;
