@@ -262,7 +262,7 @@ export default {
     submitAirportSearch: function() {
       this.submitAirportSearchDeparture();
       this.submitAirportSearchArrival();
-      setTimeout(this.submitAirportQuery, 5000);
+      setTimeout(this.submitAirportQuery, 1000);
     },
 
     submitAirportQuery: function() {
