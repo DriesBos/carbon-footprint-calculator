@@ -1,35 +1,33 @@
 <template>
   <div class="autocomplete">
-    <p>{{ jsonData }}</p>
     <input
       id="search"
       v-model="search"
-      @keyup.enter="onEnter"
       @input="onChange"
       :placeholder="placeholder"
       type="search"
       autocomplete="off"
     />
     <ul v-show="isOpen" id="results">
-      <li v-for="items in jsonData" @click="" class="ellipsis">{{ items }}</li>
+      <li v-for="(item, i) in items" :key="i" class="ellipsis">{{ item.city }}</li>
     </ul>
   </div>
 </template>
 
 <script>
-import json from '~/assets/data/airports.json'
+import json from "~/assets/data/airports.json";
 export default {
   name: "autocomplete",
   props: {
     isAsync: {
-      type: Boolean, 
+      type: Boolean,
       required: false,
       default: false
     },
     placeholder: ""
   },
   data: () => ({
-    jsonData: json,
+    items: json,
     search: "",
     results: [],
     isOpen: false,
@@ -37,7 +35,7 @@ export default {
   }),
   methods: {
     onChange() {
-      this.filterResults()
+      this.filterResults();
       this.isOpen = true;
     },
     filterResults() {
@@ -90,18 +88,18 @@ export default {
     document.removeEventListener("click", this.handleClickOutside);
   }
 
-      // const search = document.getElementById("search");
-      // const matchList = document.getElementById("match-list");
-      // this.searchAirport();
-      // const searchAirport = async searchInput => {
-      //   const res = await fetch("../assets/data/airports.json");
-      //   const airports = await res.json();
-      //   console.log(airports);
-      // };
-      // // search airport.json
-      // search.addEventListener("input", () => searchAirports(search.value));
-      // }
-}
+  // const search = document.getElementById("search");
+  // const matchList = document.getElementById("match-list");
+  // this.searchAirport();
+  // const searchAirport = async searchInput => {
+  //   const res = await fetch("../assets/data/airports.json");
+  //   const airports = await res.json();
+  //   console.log(airports);
+  // };
+  // // search airport.json
+  // search.addEventListener("input", () => searchAirports(search.value));
+  // }
+};
 </script>
 
 <style lang="sass" scoped>
