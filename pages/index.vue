@@ -1,11 +1,11 @@
 <template>
-  <div class="container" :data-depth="formDepth">
+  <div class="container">
     <div class="content-block">
       <transition name="content-change" mode="out-in">
         <!------------ Inputs ------------>
-        <div v-if="showInput" class="input-container" key="input">
+        <div v-if="toggleInputOutput" class="input-container" key="input">
           <transition name="content-change" mode="out-in">
-            <div v-if="inputIsFlightNumber" class="input-block bar">
+            <div v-if="inputToggle" class="input-block bar">
               <div class="bar-icon">
                 <svg>
                   <path
@@ -16,10 +16,11 @@
               </div>
               <input
                 id="flightNumInput"
-                v-model="input"
-                @keyup.enter="submitFlightQuery()"
+                v-model="inputFlightNumber"
+                @keyup.enter="submitFlightQuery"
                 placeholder="flightnumber"
                 type="text"
+                autocomplete="off"
               />
               <div class="select-container">
                 <select v-model="returnFactor">
@@ -33,11 +34,7 @@
                   <option value="2">business</option>
                 </select>
               </div>
-              <button
-                @click="submitFlightQuery(input)"
-                class="bar-button"
-                title="next: calculate footprint"
-              >
+              <button @click="submitFlightQuery" class="bar-button" title="calculate footprint">
                 <div class="bar-icon">
                   <svg>
                     <path d="M0 0h24v24H0z" fill="none" />
@@ -58,15 +55,15 @@
               </div>
               <input
                 id="departureInput"
-                v-model="departureResult"
-                @keyup.enter="submitAiportQuery()"
+                v-model="inputDeparture"
+                @keyup.enter="submitAirportSearch"
                 placeholder="departure"
                 type="text"
               />
               <input
                 id="arrivalInput"
-                v-model="arrivalResult"
-                @keyup.enter="submitAirportQuery()"
+                v-model="inputArrival"
+                @keyup.enter="submitAirportSearch"
                 placeholder="arrival"
                 type="text"
               />
@@ -83,7 +80,7 @@
                 </select>
               </div>
               <button
-                @click="submitAirportQuery()"
+                @click="submitAirportSearch"
                 class="bar-button"
                 title="next: calculate footprint"
               >
@@ -97,66 +94,57 @@
             </div>
           </transition>
 
-          <div @click="toOutputPage" class="bar-toggle">
-            <p>to output page (development)</p>
-          </div>
-          <div @click="inputIsFlightNumber = !inputIsFlightNumber" class="bar-toggle">
+          <div @click="inputToggleFunction" class="bar-toggle">
             <transition name="content-change" mode="out-in">
-              <p v-if="inputIsFlightNumber" key="airports">calculate by airports</p>
+              <p v-if="inputToggle" key="airports">calculate by airport / airport-code</p>
               <p v-else key="flightNumber">calculate by flight-number</p>
             </transition>
           </div>
         </div>
-      </transition>
-      <!------------ Output ------------>
-      <div v-if="showOutput" class="output-block" key="output" @mouseover="animateAverage">
-        <ul>
-          <li class="bar-results bar">
-            <div class="bar-icon">
-              <svg>
-                <path
-                  d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"
-                />
-                <path d="M0 0h24v24H0z" fill="none" />
-              </svg>
-            </div>
-            <div class="bar-results-text">
-              flight footprint: {{ carbonTotal }}
-              <span>tCO2</span>
-            </div>
-            <div class="animateAverage one"></div>
-          </li>
-        </ul>
-        <ul>
-          <li class="bar-results bar">
-            <div class="bar-icon">
-              <svg>
-                <path
-                  d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
-                />
-                <path d="M0 0h24v24H0z" fill="none" />
-              </svg>
-            </div>
-            <div class="bar-results-text">
-              european person average: {{ perPersonAverage }}
-              <span>tCO2</span>
-            </div>
-            <div class="animateAverage two"></div>
-          </li>
-        </ul>
-        <div @click="resetResults(result)" class="bar-toggle" title="reset values">
-          <svg class="reset">
-            <path
-              d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"
-            />
-            <path d="M0 0h24v24H0z" fill="none" />
-          </svg>
+        <!------------ Output ------------>
+        <div v-else class="output-block" key="output">
+          <ul>
+            <li class="bar-results bar">
+              <div class="bar-icon">
+                <svg>
+                  <path
+                    d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"
+                  />
+                  <path d="M0 0h24v24H0z" fill="none" />
+                </svg>
+              </div>
+              <div class="bar-results-text">
+                flight footprint: {{ totalCarbon }}
+                <span>tCO2</span>
+              </div>
+              <div class="animateAverage one"></div>
+            </li>
+            <li class="bar-results bar">
+              <div class="bar-icon">
+                <svg>
+                  <path
+                    d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
+                  />
+                  <path d="M0 0h24v24H0z" fill="none" />
+                </svg>
+              </div>
+              <div class="bar-results-text">
+                european person average: {{ totalEurPersonAvg }}
+                <span>tCO2</span>
+              </div>
+              <div class="animateAverage two"></div>
+            </li>
+          </ul>
+          <div @click="resetAll" class="bar-toggle" title="reset values">
+            <svg class="reset">
+              <path
+                d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"
+              />
+              <path d="M0 0h24v24H0z" fill="none" />
+            </svg>
+          </div>
         </div>
-        <p v-if="loading">Loading...</p>
-        <p
-          v-if="errored"
-        >We're sorry, we're not able to retrieve this resultrmation at the moment, please try back later</p>
-      </div>
+      </transition>
     </div>
   </div>
 </template>
@@ -174,97 +162,115 @@ import {
 
 export default {
   data: () => ({
-    formDepth: 1,
-    input: "",
-    result: "",
-    showInput: true,
-    showOutput: false,
-    departureResult: "",
-    arrivalResult: "",
-    aircraftResult: "",
-    distanceResult: "",
-    errored: false,
-    loading: false,
+    inputFlightNumber: "",
+    inputDeparture: "",
+    inputArrival: "",
+    inputToggle: true,
+    toggleInputOutput: true,
     seatFactor: 1,
     returnFactor: 2,
-    carbonTotal: 0,
-    carbonTotalBar: 0,
-    perPersonAverage: 7.2,
-    inputIsFlightNumber: true
+    totalCarbon: 0,
+    totalCarbonBar: 0,
+    totalEurPersonAvg: 7.2
   }),
   methods: {
-    toOutputPage: function() {
-      this.showInput = false;
-      this.showOutput = true;
+    inputFocus: function() {
+      document.getElementById("flightNumInput").focus();
     },
+
+    inputToggleFunction: function() {
+      this.inputToggle = !this.inputToggle;
+      this.resetInput();
+    },
+
     animateAverage: function() {
-      this.carbonTotalBar = (100 / this.perPersonAverage) * this.carbonTotal;
-      console.log(this.perPersonAverage, this.carbonTotal, this.carbonTotalBar);
+      this.totalCarbonBar = (100 / this.totalEurPersonAvg) * this.totalCarbon;
       anime({
         targets: ".animateAverage.one",
-        width: `${this.carbonTotalBar}%`,
-        duration: 800,
-        easing: "easeInOutQuad"
+        width: `${this.totalCarbonBar}%`,
+        delay: 900,
+        duration: 900,
+        easing: "easeOutSine"
       });
       anime({
         targets: ".animateAverage.two",
         width: "100%",
-        duration: 800,
-        easing: "easeInOutQuad"
+        delay: 900,
+        duration: 900,
+        easing: "easeOutSine"
       });
     },
-    inputFocus: function() {
-      document.getElementById("flightNumInput").focus();
-    },
-    resetInput: function() {
-      this.departureResult = "";
-      this.arrivalResult = "";
-      this.input = "";
-      this.seat = "economy";
-    },
-    resetResults: function() {
-      this.result = "";
-      this.carbonTotal = 0;
-      this.carbonTotalBar = 0;
-      this.formDepth = 1;
-      this.showInput = true;
-      this.showOutput = false;
-    },
-    carbonCalculation: function() {
-      // this.carbonTotal = this.carbonTotal.toFixed(1);
-    },
+
     submitFlightQuery: function() {
-      let inputTrimmed = this.input.trim() && this.input.replace(/ +/g, "");
-      this.animateAverage();
+      let inputTrimmed =
+        this.inputFlightNumber.trim() &&
+        this.inputFlightNumber.replace(/ +/g, "");
       if (inputTrimmed !== "") {
         axios
           .get(
             `${aviationEdgeUri}flights?key=${aviationEdgeKey}&limit=1&flightIata=${inputTrimmed}`
           )
           .then(response => {
-            console.log("RESULT", response.data[0]);
-            this.result = response.data[0];
-            this.departureResult = response.data[0].departure.icaoCode;
-            this.arrivalResult = response.data[0].arrival.icaoCode;
+            this.inputDeparture = response.data[0].departure.icaoCode;
+            this.inputArrival = response.data[0].arrival.icaoCode;
             this.submitAirportQuery();
           })
           .catch(error => {
-            // this.errored = true;
-            console.log("submitFlightQuery ERROR", response.error);
+            console.log(error);
           });
       } else {
-        document.getElementById("flightNumInput").placeholder =
-          "please enter a flightnumber";
-        document.getElementById("flightNumInput").focus();
+        this.inputFocus();
       }
-      this.resetInput();
+    },
+
+    submitAirportSearchDeparture: function() {
+      axios({
+        method: "GET",
+        url: `${greatCircleMapperUri}airports/search/${this.inputDeparture}`,
+        headers: {
+          "content-type": "application/octet-stream",
+          "x-rapidapi-host": "greatcirclemapper.p.rapidapi.com",
+          "x-rapidapi-key": `${greatCircleMapperKey}`
+        }
+      })
+        .then(response => {
+          this.inputDeparture = response.data[0].icao_code;
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+
+    submitAirportSearchArrival: function() {
+      axios({
+        method: "GET",
+        url: `${greatCircleMapperUri}airports/search/${this.inputArrival}`,
+        headers: {
+          "content-type": "application/octet-stream",
+          "x-rapidapi-host": "greatcirclemapper.p.rapidapi.com",
+          "x-rapidapi-key": `${greatCircleMapperKey}`
+        }
+      })
+        .then(response => {
+          this.inputArrival = response.data[0].icao_code;
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+
+    submitAirportSearch: function() {
+      this.submitAirportSearchDeparture();
+      this.submitAirportSearchArrival();
+      setTimeout(this.submitAirportQuery, 5000);
     },
 
     submitAirportQuery: function() {
       let carbonCalculation;
+      let distanceResult;
       axios({
         method: "GET",
-        url: `${greatCircleMapperUri}airports/route/${this.departureResult}-${this.arrivalResult}/510`,
+        url: `${greatCircleMapperUri}airports/route/${this.inputDeparture}-${this.inputArrival}/510`,
         headers: {
           "x-rapidapi-host": "greatcirclemapper.p.rapidapi.com",
           "x-rapidapi-key": `${greatCircleMapperKey}`,
@@ -278,24 +284,41 @@ export default {
             this.distanceResult *
             this.seatFactor *
             this.returnFactor;
-          this.carbonTotal = this.carbonCalculation.toFixed(1);
-          this.formDepth = 2;
-          this.showInput = false;
-          this.showOutput = true;
-          this.animateAverage();
+          this.totalCarbon = this.carbonCalculation.toFixed(1);
+          this.toggleInputOutput = !this.toggleInputOutput;
+          setTimeout(this.animateAverage, 1000);
         })
         .catch(error => {
           console.log(error);
         });
-      // this.carbonTotal = 2.2;
-      // this.formDepth = 2;
-      // this.showInput = false;
-      // this.showOutput = true;
-      this.animateAverage();
+    },
+
+    // submitTest: function() {
+    //   this.totalCarbon = 2.2;
+    //   this.toggleInputOutput = !this.toggleInputOutput;
+    //   setTimeout(this.animateAverage, 1000);
+    // },
+
+    resetAll: function() {
+      this.inputFlightNumber = "";
+      this.inputDeparture = "";
+      this.inputArrival = "";
+      this.returnFactor = 2;
+      this.seatFactor = 1;
+      this.totalCarbon = 0;
+      this.totalCarbonBar = 0;
+      this.toggleInputOutput = !this.toggleInputOutput;
+    },
+    resetInput: function() {
+      this.inputFlightNumber = "";
+      this.inputDeparture = "";
+      this.inputArrival = "";
+      this.returnFactor = 2;
+      this.seatFactor = 1;
     }
   },
   mounted: function() {
-    this.inputFocus(); // TODO: make input component so this works on component render
+    this.inputFocus();
   }
 };
 </script>
