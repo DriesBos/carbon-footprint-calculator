@@ -24,7 +24,7 @@
               <input
                 id="flightNumInput"
                 v-model="inputFlightNumber"
-                @keyup.enter="submitTest"
+                @keyup.enter="submitFlightQuery"
                 placeholder="flightnumber"
                 type="text"
                 autocomplete="off"
@@ -41,7 +41,7 @@
                   <option value="5.3">business</option>
                 </select>
               </div>
-              <button @click="submitTest" class="bar-button" title="calculate footprint">
+              <button @click="submitFlightQuery" class="bar-button" title="calculate footprint">
                 <div class="bar-icon">
                   <svg>
                     <path d="M0 0h24v24H0z" fill="none" />
