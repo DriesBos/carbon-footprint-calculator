@@ -160,13 +160,16 @@
 import axios from "axios";
 import rateLimit from "axios-rate-limit";
 import anime from "animejs";
-import {
-  aviationEdgeKey,
-  aviationEdgeUri,
-  greatCircleMapperKey,
-  greatCircleMapperUri,
-  proxy
-} from "~/plugins/config";
+const aviationEdgeKey = process.env.AVIATIONEDGEKEY;
+const aviationEdgeUri = process.env.AVIATIONEDGEURI;
+const greatCircleMapperKey = process.env.GREATCIRCLEMAPPERKEY;
+const greatCircleMapperUri = process.env.GREATCIRCLEMAPPERURI;
+// import {
+//   aviationEdgeKey,
+//   aviationEdgeUri,
+//   greatCircleMapperKey,
+//   greatCircleMapperUri
+// } from "~/plugins/config";
 
 const http = rateLimit(axios.create(), {
   maxRequests: 10,
