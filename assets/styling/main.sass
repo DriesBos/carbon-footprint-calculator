@@ -31,8 +31,11 @@
 
 .message-error
   margin-top: 20px
+  transition: visibility .3s ease
   p
     color: #e34c29
+  &[data-error-message="0"]
+    visibility: hidden
 
 .bar-button
   display: flex

@@ -4,11 +4,10 @@
       <transition name="content-change" mode="out-in">
         <!------------ Inputs ------------>
         <div v-if="toggleInputOutput" class="input-container" key="input">
-          <div class="message-error message">
+          <div class="message-error message" :data-error-message="errorMessage">
             <transition name="content-change" mode="out-in">
-              <p v-if="errorMessage === 1">too many api calls made in the last hour</p>
-              <p v-if="errorMessage === 2">api call error</p>
-              <p v-if="errorMessage === 3">flight-number not found</p>
+              <p v-if="errorMessage === '0'">no messages</p>
+              <p v-else>{{ errorMessage }}</p>
             </transition>
           </div>
 
@@ -143,7 +142,7 @@
               <div class="animateAverage two"></div>
             </li>
           </ul>
-          <div @click="resetAll" class="message-toggle" title="reset values">
+          <div @click="resetAll" class="message-toggle message" title="reset values">
             <svg class="reset">
               <path
                 d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"
@@ -186,7 +185,7 @@ export default {
     totalCarbon: 0,
     totalCarbonBar: 0,
     totalEurPersonAvg: 7.2,
-    errorMessage: 1
+    errorMessage: "0"
   }),
   methods: {
     inputFocus: function() {
@@ -232,11 +231,11 @@ export default {
             console.log("submitFlightQuery response", response);
           })
           .catch(error => {
-            this.error = 2;
+            this.errorMessage = error;
             console.log("submitFlightQuery error", error);
           });
       } else {
-        this.errorMessage = error;
+        this.errorMessage = "input error";
       }
     },
 
