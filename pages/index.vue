@@ -38,7 +38,7 @@
               <div class="select-container">
                 <select v-model="seatFactor">
                   <option value="1">economy</option>
-                  <option value="2">business</option>
+                  <option value="5.3">business</option>
                 </select>
               </div>
               <button @click="submitTest" class="bar-button" title="calculate footprint">
@@ -83,7 +83,7 @@
               <div class="select-container">
                 <select v-model="seatFactor">
                   <option value="1">economy</option>
-                  <option value="2">business</option>
+                  <option value="5.3">business</option>
                 </select>
               </div>
               <button
@@ -180,7 +180,7 @@ export default {
     inputArrival: "",
     inputToggle: true,
     toggleInputOutput: true,
-    seatFactor: 1,
+    seatFactor: 1, // http://documents.worldbank.org/curated/en/141851468168853188/pdf/WPS6471.pdf // https://theicct.org/blogs/staff/inflight-luxury-who-really-pays // https://www.atmosfair.de/en/offset/flight
     returnFactor: 2,
     totalCarbon: 0,
     totalCarbonBar: 0,
