@@ -6,9 +6,9 @@
         <div v-if="toggleInputOutput" class="input-container" key="input">
           <div class="message-error message">
             <transition name="content-change" mode="out-in">
-              <p v-if="error === 1">too many api calls made in the last hour</p>
-              <p v-if="error === 2">api call error</p>
-              <p v-if="error === 3">flight-number not found</p>
+              <p v-if="errorMessage === 1">too many api calls made in the last hour</p>
+              <p v-if="errorMessage === 2">api call error</p>
+              <p v-if="errorMessage === 3">flight-number not found</p>
             </transition>
           </div>
 
@@ -186,7 +186,7 @@ export default {
     totalCarbon: 0,
     totalCarbonBar: 0,
     totalEurPersonAvg: 7.2,
-    error: 1
+    errorMessage: 1
   }),
   methods: {
     inputFocus: function() {
@@ -229,13 +229,14 @@ export default {
             this.inputDeparture = response.data[0].departure.icaoCode;
             this.inputArrival = response.data[0].arrival.icaoCode;
             this.submitAirportQuery();
+            console.log("submitFlightQuery response", response);
           })
           .catch(error => {
-            console.log("submitFlightQuery error", error);
             this.error = 2;
+            console.log("submitFlightQuery error", error);
           });
       } else {
-        this.error = error;
+        this.errorMessage = error;
       }
     },
 
@@ -251,10 +252,11 @@ export default {
       })
         .then(response => {
           this.inputDeparture = response.data[0].icao_code;
+          console.log("submitAirportSearchDeparture response", response);
         })
         .catch(error => {
-          console.log("submitAirportSearchDeparture", error);
-          this.error = error;
+          this.errorMessage = error;
+          console.log("submitAirportSearchDeparture error", error);
         });
     },
 
@@ -270,10 +272,11 @@ export default {
       })
         .then(response => {
           this.inputArrival = response.data[0].icao_code;
+          console.log("submitAirportSearchArrival response", response);
         })
         .catch(error => {
-          console.log("submitAirportSearchArrival", error);
-          this.error = error;
+          this.errorMessage = error;
+          console.log("submitAirportSearchArrival error", error);
         });
     },
 
@@ -305,10 +308,11 @@ export default {
           this.totalCarbon = this.carbonCalculation.toFixed(1);
           this.toggleInputOutput = !this.toggleInputOutput;
           setTimeout(this.animateAverage, 1000);
+          console.log("submitAirportQuery response", response);
         })
         .catch(error => {
-          console.log("submitAirportQuery", error);
-          this.error = error;
+          this.errorMessage = error;
+          console.log("submitAirportQuery error", error);
         });
     },
 
@@ -327,7 +331,7 @@ export default {
       this.totalCarbon = 0;
       this.totalCarbonBar = 0;
       this.toggleInputOutput = !this.toggleInputOutput;
-      this.error = 0;
+      this.errorMessage = 0;
     },
     resetInput: function() {
       this.inputFlightNumber = "";
@@ -335,7 +339,7 @@ export default {
       this.inputArrival = "";
       this.returnFactor = 2;
       this.seatFactor = 1;
-      this.error = 0;
+      this.errorMessage = 0;
     }
   },
   mounted: function() {
