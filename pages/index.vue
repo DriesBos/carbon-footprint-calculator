@@ -231,11 +231,11 @@ export default {
             this.submitAirportQuery();
           })
           .catch(error => {
-            console.log(error);
+            console.log("submitFlightQuery error", error);
             this.error = 2;
           });
       } else {
-        this.error = 3;
+        this.error = error;
       }
     },
 
@@ -253,8 +253,8 @@ export default {
           this.inputDeparture = response.data[0].icao_code;
         })
         .catch(error => {
-          console.log(error);
-          this.error = 2;
+          console.log("submitAirportSearchDeparture", error);
+          this.error = error;
         });
     },
 
@@ -272,8 +272,8 @@ export default {
           this.inputArrival = response.data[0].icao_code;
         })
         .catch(error => {
-          console.log(error);
-          this.error = 2;
+          console.log("submitAirportSearchArrival", error);
+          this.error = error;
         });
     },
 
@@ -307,8 +307,8 @@ export default {
           setTimeout(this.animateAverage, 1000);
         })
         .catch(error => {
-          console.log(error);
-          this.error = 2;
+          console.log("submitAirportQuery", error);
+          this.error = error;
         });
     },
 
