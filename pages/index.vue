@@ -24,7 +24,7 @@
               <input
                 id="flightNumInput"
                 v-model="inputFlightNumber"
-                @keyup.enter="submitFlightQuery"
+                @keyup.enter="submitTest"
                 placeholder="flightnumber"
                 type="text"
                 autocomplete="off"
@@ -41,7 +41,7 @@
                   <option value="2">business</option>
                 </select>
               </div>
-              <button @click="submitFlightQuery" class="bar-button" title="calculate footprint">
+              <button @click="submitTest" class="bar-button" title="calculate footprint">
                 <div class="bar-icon">
                   <svg>
                     <path d="M0 0h24v24H0z" fill="none" />
@@ -143,7 +143,7 @@
             </li>
           </ul>
           <div @click="resetAll" class="message-toggle message" title="reset values">
-            <svg class="reset">
+            <svg class="reset" transform="scale(-1,1)">
               <path
                 d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"
               />
@@ -317,11 +317,11 @@ export default {
         });
     },
 
-    // submitTest: function() {
-    //   this.totalCarbon = 2.2;
-    //   this.toggleInputOutput = !this.toggleInputOutput;
-    //   setTimeout(this.animateAverage, 1000);
-    // },
+    submitTest: function() {
+      this.totalCarbon = 2.2;
+      this.toggleInputOutput = !this.toggleInputOutput;
+      setTimeout(this.animateAverage, 1000);
+    },
 
     resetAll: function() {
       this.inputFlightNumber = "";
@@ -332,7 +332,7 @@ export default {
       this.totalCarbon = 0;
       this.totalCarbonBar = 0;
       this.toggleInputOutput = !this.toggleInputOutput;
-      this.errorMessage = 0;
+      this.errorMessage = "0";
     },
     resetInput: function() {
       this.inputFlightNumber = "";
@@ -340,7 +340,7 @@ export default {
       this.inputArrival = "";
       this.returnFactor = 2;
       this.seatFactor = 1;
-      this.errorMessage = 0;
+      this.errorMessage = "0";
     }
   },
   mounted: function() {
