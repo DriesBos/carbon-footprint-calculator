@@ -5,9 +5,9 @@
         <!------------ Inputs ------------>
         <div v-if="toggleInputOutput" class="input-container" key="input">
           <div class="message-error message" :data-error-message="errorMessage">
-            <transition name="content-change" mode="out-in">
-              <p v-if="errorMessage === '0'">no messages</p>
-              <p v-else>{{ errorMessage }}</p>
+            <transition name="message-change" mode="out-in">
+              <p v-if="errorMessage === '0'" key="noError">&nbsp;</p>
+              <p v-else key="hasError">{{ errorMessage }}</p>
             </transition>
           </div>
 
@@ -216,10 +216,11 @@ export default {
     },
 
     submitFlightQuery: function() {
+      let inputRegEx = /^[a-zA-Z]{2}\d{1,4}/g; // begin string = 2 letters + at least 1 digit
       let inputTrimmed =
         this.inputFlightNumber.trim() &&
         this.inputFlightNumber.replace(/ +/g, "");
-      if (inputTrimmed !== "") {
+      if (inputTrimmed !== "" && inputTrimmed.match(inputRegEx)) {
         axios
           .get(
             `${aviationEdgeUri}flights?key=${aviationEdgeKey}&limit=1&flightIata=${inputTrimmed}`
@@ -235,7 +236,8 @@ export default {
             console.log("submitFlightQuery error", error);
           });
       } else {
-        this.errorMessage = "input error";
+        this.errorMessage =
+          "Flight-numbers are 2 letters followed by 1-4 digits";
       }
     },
 
