@@ -8,11 +8,15 @@
   line-height: 50px
   overflow: hidden
 
-.bar-toggle
+.message
   display: flex
-  justify-content: flex-end
   width: 100%
-  padding-right: 10px
+  p
+    padding-left: 10px
+    padding-right: 10px
+
+.message-toggle
+  justify-content: flex-end
   margin-bottom: 20px
   opacity: .66
   p
@@ -24,6 +28,11 @@
     cursor: pointer
     .reset
       transform: rotate(230deg)
+
+.message-error
+  margin-top: 20px
+  p
+    color: #e34c29
 
 .bar-button
   display: flex

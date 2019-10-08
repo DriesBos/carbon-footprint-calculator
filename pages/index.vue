@@ -4,6 +4,14 @@
       <transition name="content-change" mode="out-in">
         <!------------ Inputs ------------>
         <div v-if="toggleInputOutput" class="input-container" key="input">
+          <div class="message-error message">
+            <transition name="content-change" mode="out-in">
+              <p v-if="error === 1">too many api calls made in the last hour</p>
+              <p v-if="error === 2">api call error</p>
+              <p v-if="error === 3">flight-number not found</p>
+            </transition>
+          </div>
+
           <transition name="content-change" mode="out-in">
             <div v-if="inputToggle" class="input-block bar">
               <div class="bar-icon">
@@ -94,7 +102,7 @@
             </div>
           </transition>
 
-          <div @click="inputToggleFunction" class="bar-toggle">
+          <div @click="inputToggleFunction" class="message-toggle message">
             <transition name="content-change" mode="out-in">
               <p v-if="inputToggle" key="airports">calculate by airport / airport-code</p>
               <p v-else key="flightNumber">calculate by flight-number</p>
@@ -135,7 +143,7 @@
               <div class="animateAverage two"></div>
             </li>
           </ul>
-          <div @click="resetAll" class="bar-toggle" title="reset values">
+          <div @click="resetAll" class="message-toggle" title="reset values">
             <svg class="reset">
               <path
                 d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"
@@ -151,6 +159,7 @@
 
 <script>
 import axios from "axios";
+import rateLimit from "axios-rate-limit";
 import anime from "animejs";
 import {
   aviationEdgeKey,
@@ -159,6 +168,11 @@ import {
   greatCircleMapperUri,
   proxy
 } from "~/plugins/config";
+
+const http = rateLimit(axios.create(), {
+  maxRequests: 10,
+  perMilliseconds: 3600000
+});
 
 export default {
   data: () => ({
@@ -171,7 +185,8 @@ export default {
     returnFactor: 2,
     totalCarbon: 0,
     totalCarbonBar: 0,
-    totalEurPersonAvg: 7.2
+    totalEurPersonAvg: 7.2,
+    error: 1
   }),
   methods: {
     inputFocus: function() {
@@ -217,9 +232,10 @@ export default {
           })
           .catch(error => {
             console.log(error);
+            this.error = 2;
           });
       } else {
-        this.inputFocus();
+        this.error = 3;
       }
     },
 
@@ -238,6 +254,7 @@ export default {
         })
         .catch(error => {
           console.log(error);
+          this.error = 2;
         });
     },
 
@@ -256,6 +273,7 @@ export default {
         })
         .catch(error => {
           console.log(error);
+          this.error = 2;
         });
     },
 
@@ -290,6 +308,7 @@ export default {
         })
         .catch(error => {
           console.log(error);
+          this.error = 2;
         });
     },
 
@@ -308,6 +327,7 @@ export default {
       this.totalCarbon = 0;
       this.totalCarbonBar = 0;
       this.toggleInputOutput = !this.toggleInputOutput;
+      this.error = 0;
     },
     resetInput: function() {
       this.inputFlightNumber = "";
@@ -315,6 +335,7 @@ export default {
       this.inputArrival = "";
       this.returnFactor = 2;
       this.seatFactor = 1;
+      this.error = 0;
     }
   },
   mounted: function() {
