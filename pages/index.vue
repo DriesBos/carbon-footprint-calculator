@@ -60,19 +60,22 @@
                   <path d="M0 0h24v24H0z" fill="none" />
                 </svg>
               </div>
-              <input
+              <autocomplete placeholder="departure" />
+              <!-- <input
                 id="departureInput"
                 v-model="inputDeparture"
                 @keyup.enter="submitAirportSearch"
                 placeholder="departure"
                 type="text"
-              />
+                autocomplete="off"
+              />-->
               <input
                 id="arrivalInput"
                 v-model="inputArrival"
                 @keyup.enter="submitAirportSearch"
                 placeholder="arrival"
                 type="text"
+                autocomplete="off"
               />
               <div class="select-container">
                 <select v-model="returnFactor">
@@ -159,17 +162,18 @@
 <script>
 import axios from "axios";
 import rateLimit from "axios-rate-limit";
+import autocomplete from "~/components/Autocomplete";
 import anime from "animejs";
-const aviationEdgeKey = process.env.AVIATIONEDGEKEY;
-const aviationEdgeUri = process.env.AVIATIONEDGEURI;
-const greatCircleMapperKey = process.env.GREATCIRCLEMAPPERKEY;
-const greatCircleMapperUri = process.env.GREATCIRCLEMAPPERURI;
-// import {
-//   aviationEdgeKey,
-//   aviationEdgeUri,
-//   greatCircleMapperKey,
-//   greatCircleMapperUri
-// } from "~/plugins/config";
+// const aviationEdgeKey = process.env.AVIATIONEDGEKEY;
+// const aviationEdgeUri = process.env.AVIATIONEDGEURI;
+// const greatCircleMapperKey = process.env.GREATCIRCLEMAPPERKEY;
+// const greatCircleMapperUri = process.env.GREATCIRCLEMAPPERURI;
+import {
+  aviationEdgeKey,
+  aviationEdgeUri,
+  greatCircleMapperKey,
+  greatCircleMapperUri
+} from "~/plugins/config";
 
 const http = rateLimit(axios.create(), {
   maxRequests: 10,
@@ -177,19 +181,24 @@ const http = rateLimit(axios.create(), {
 });
 
 export default {
-  data: () => ({
-    inputFlightNumber: "",
-    inputDeparture: "",
-    inputArrival: "",
-    inputToggle: true,
-    toggleInputOutput: true,
-    seatFactor: 1, // http://documents.worldbank.org/curated/en/141851468168853188/pdf/WPS6471.pdf // https://theicct.org/blogs/staff/inflight-luxury-who-really-pays // https://www.atmosfair.de/en/offset/flight
-    returnFactor: 2,
-    totalCarbon: 0,
-    totalCarbonBar: 0,
-    totalEurPersonAvg: 7.2,
-    errorMessage: "0"
-  }),
+  components: {
+    autocomplete
+  },
+  data: function() {
+    return {
+      inputFlightNumber: "",
+      inputDeparture: "",
+      inputArrival: "",
+      inputToggle: false,
+      toggleInputOutput: true,
+      seatFactor: 1, // http://documents.worldbank.org/curated/en/141851468168853188/pdf/WPS6471.pdf // https://theicct.org/blogs/staff/inflight-luxury-who-really-pays // https://www.atmosfair.de/en/offset/flight
+      returnFactor: 2,
+      totalCarbon: 0,
+      totalCarbonBar: 0,
+      totalEurPersonAvg: 7.2,
+      errorMessage: "0"
+    };
+  },
   methods: {
     inputFocus: function() {
       document.getElementById("flightNumInput").focus();
@@ -347,7 +356,7 @@ export default {
     }
   },
   mounted: function() {
-    this.inputFocus();
+    // this.inputFocus();
   }
 };
 </script>

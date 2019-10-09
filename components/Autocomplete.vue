@@ -1,54 +1,68 @@
 <template>
   <div class="autocomplete">
     <input
-      id="search"
+      type="text"
       v-model="search"
       @input="onChange"
       :placeholder="placeholder"
-      type="search"
       autocomplete="off"
+      @keydown.down="onArrowDown"
+      @keydown.up="onArrowUp"
+      @keydown.enter="onEnter"
+      @keydown.esc="closeResults"
     />
-    <ul v-show="isOpen" id="results">
-      <li v-for="(item, i) in items" :key="i" class="ellipsis">{{ item.city }}</li>
-    </ul>
+    <transition name="autocomplete">
+      <ul v-show="isOpen">
+        <li
+          v-for="(result, i) in results"
+          :key="i"
+          @click="setResult(result)"
+          class="ellipsis"
+          :class="{ 'active': i === arrowCounter }"
+        >{{ result }}</li>
+      </ul>
+    </transition>
   </div>
 </template>
 
 <script>
-import json from "~/assets/data/airports.json";
+import json from "./../assets/data/airports.json";
 export default {
   name: "autocomplete",
   props: {
-    isAsync: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
     placeholder: ""
   },
-  data: () => ({
-    items: json,
-    search: "",
-    results: [],
-    isOpen: false,
-    arrowCounter: 0
-  }),
+  data: function() {
+    return {
+      items: json,
+      search: "",
+      results: [],
+      isOpen: false,
+      arrowCounter: 0
+    };
+  },
   methods: {
     onChange() {
       this.filterResults();
       this.isOpen = true;
     },
     filterResults() {
-      // first uncapitalize all the things
-      // this.results = this.items
-      //.filter(item => {
-      //  return item.toLowerCase().indexOf(this.search.toLowerCase()) > -1;
-      //});
-      // console.log(this.results)
+      let removeNoIata = this.items.filter(el => el.iata); // Remove results without IATA data
+      let cityList = removeNoIata.map(
+        el => `${el.city} - ${el.name} (${el.iata})`
+      ); // Map into new array
+      this.results = cityList.filter(
+        // Return search results
+        el => el.toLowerCase().indexOf(this.search.toLowerCase()) > -1
+      );
     },
     setResult(result) {
       this.search = result;
+      this.closeResults();
+    },
+    closeResults() {
       this.isOpen = false;
+      this.arrowCounter = 0;
     },
     onArrowDown(evt) {
       if (this.arrowCounter < this.results.length) {
@@ -62,81 +76,20 @@ export default {
     },
     onEnter() {
       this.search = this.results[this.arrowCounter];
-      this.isOpen = false;
-      this.arrowCounter = -1;
+      this.closeResults();
     },
     handleClickOutside(evt) {
+      console.log(evt, "jeeh");
       if (!this.$el.contains(evt.target)) {
-        this.isOpen = false;
-        this.arrowCounter = -1;
+        this.closeResults();
       }
+    },
+    mounted() {
+      document.addEventListener("click", this.handleClickOutside);
+    },
+    destroyed() {
+      document.removeEventListener("click", this.handleClickOutside);
     }
-  },
-  watch: {
-    jsonData: function(val, oldValue) {
-      // actually compare them
-      if (val.length !== oldValue.length) {
-        this.results = val;
-        this.isLoading = false;
-      }
-    }
-  },
-  mounted() {
-    document.addEventListener("click", this.handleClickOutside);
-  },
-  destroyed() {
-    document.removeEventListener("click", this.handleClickOutside);
   }
-
-  // const search = document.getElementById("search");
-  // const matchList = document.getElementById("match-list");
-  // this.searchAirport();
-  // const searchAirport = async searchInput => {
-  //   const res = await fetch("../assets/data/airports.json");
-  //   const airports = await res.json();
-  //   console.log(airports);
-  // };
-  // // search airport.json
-  // search.addEventListener("input", () => searchAirports(search.value));
-  // }
 };
 </script>
-
-<style lang="sass" scoped>
-.autocomplete
-  position: relative
-  height: 100%
-  input
-    width: 100%
-    height: 100%
-  ul
-    position: absolute
-    top: 50px
-    left: 0
-    line-height: 1.3em
-    overflow: visible
-    max-height: 120px
-    overflow: auto
-    background: white
-    color: black
-    width: 100%
-    padding-top: 5px
-    padding-bottom: 10px
-    &::after
-      content: ""
-      position: absolute
-      z-index: 1
-      left: 0
-      bottom: 0
-      width: 100%
-      height: 4em
-      background-image: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255, 1) 90%)
-    li
-      padding-left: 10px
-
-.ellipsis
-  width: calc(100% - 10px)
-  white-space: nowrap
-  overflow: hidden
-  text-overflow: ellipsis
-</style>
