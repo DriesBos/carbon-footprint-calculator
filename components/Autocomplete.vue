@@ -104,8 +104,7 @@ export default {
     line-height: 1.5
     overflow: auto
     z-index: 999
-    height: calc(50vh - 45px)
-    max-height: 175px
+    max-height: calc(50vh - 45px)
     background: white
     color: black
     border-radius: 10px
