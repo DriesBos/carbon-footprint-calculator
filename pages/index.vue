@@ -60,23 +60,8 @@
                   <path d="M0 0h24v24H0z" fill="none" />
                 </svg>
               </div>
-              <autocomplete placeholder="departure" />
-              <!-- <input
-                id="departureInput"
-                v-model="inputDeparture"
-                @keyup.enter="submitAirportSearch"
-                placeholder="departure"
-                type="text"
-                autocomplete="off"
-              />-->
-              <input
-                id="arrivalInput"
-                v-model="inputArrival"
-                @keyup.enter="submitAirportSearch"
-                placeholder="arrival"
-                type="text"
-                autocomplete="off"
-              />
+              <autocomplete placeholder="departure" class="input-departure" />
+              <autocomplete placeholder="arrival" class="input-arrival" />
               <div class="select-container">
                 <select v-model="returnFactor">
                   <option value="1">single</option>
@@ -164,16 +149,16 @@ import axios from "axios";
 import rateLimit from "axios-rate-limit";
 import autocomplete from "~/components/Autocomplete";
 import anime from "animejs";
-const aviationEdgeKey = process.env.AVIATIONEDGEKEY;
-const aviationEdgeUri = process.env.AVIATIONEDGEURI;
-const greatCircleMapperKey = process.env.GREATCIRCLEMAPPERKEY;
-const greatCircleMapperUri = process.env.GREATCIRCLEMAPPERURI;
-// import {
-//   aviationEdgeKey,
-//   aviationEdgeUri,
-//   greatCircleMapperKey,
-//   greatCircleMapperUri
-// } from "~/plugins/config";
+// const aviationEdgeKey = process.env.AVIATIONEDGEKEY;
+// const aviationEdgeUri = process.env.AVIATIONEDGEURI;
+// const greatCircleMapperKey = process.env.GREATCIRCLEMAPPERKEY;
+// const greatCircleMapperUri = process.env.GREATCIRCLEMAPPERURI;
+import {
+  aviationEdgeKey,
+  aviationEdgeUri,
+  greatCircleMapperKey,
+  greatCircleMapperUri
+} from "~/plugins/config";
 
 const http = rateLimit(axios.create(), {
   maxRequests: 10,
@@ -200,6 +185,13 @@ export default {
     };
   },
   methods: {
+    handleClickOutside(evt) {},
+    // handleClickOutside(evt) {
+    //   console.log(evt, "jeeh");
+    //   // if (!this.$el.contains(evt.target)) {
+    //   //   // this.closeResults();
+    //   // }
+    // },
     inputFocus: function() {
       document.getElementById("flightNumInput").focus();
     },
@@ -357,6 +349,10 @@ export default {
   },
   mounted: function() {
     // this.inputFocus();
+    document.addEventListener("click", this.handleClickOutside);
+  },
+  destroyed() {
+    document.removeEventListener("click", this.handleClickOutside);
   }
 };
 </script>
